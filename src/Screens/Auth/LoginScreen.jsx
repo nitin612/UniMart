@@ -5,8 +5,11 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
 } from 'react-native';
-import React from 'react';
+import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   FONT_SIZES,
@@ -18,43 +21,109 @@ import {
   width,
   SCREEN,
 } from '../../Constants/theme';
+import { useNavigation } from '@react-navigation/native';
+import { Mail, LockKeyhole } from 'lucide-react-native';
+import * as Yup from 'yup';
 
 const LoginScreen = () => {
+  const navigation = useNavigation();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const logInSchema = Yup.object({
+    email: Yup.string()
+      .required('Email is required')
+      .email('Invalid email format'),
+    password: Yup.string().required('Password is required'),
+  });
+
+  const handleLogin = async () => {
+    try {
+      await logInSchema.validate({ email, password });
+      setError('');
+      console.log('User is valid');
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
   return (
-    <SafeAreaView style={styles.mainContainer}>
-      <View style={SHADOW.card}>
-        <Image
-          style={[styles.imageStyle]}
-          source={require('../../assets/Images/UniMartLogo.png')}
-        />
-      </View>
-      <Text style={styles.appName}>UniMart</Text>
-      <Text style={styles.heading}>Welcome</Text>
-      <Text style={styles.description}>
-        Please Sign in to Continue to your UniMart Store
-      </Text>
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputText}>University Email</Text>
-        <TextInput placeholder="yourname@univerdity.edu" style={styles.input} />
-        <Text style={styles.inputText}>Password</Text>
-        <TextInput placeholder="Password" style={styles.input} />
-      </View>
-      <View style={{ width: SCREEN.width * 0.9 }}>
-        <TouchableOpacity style={styles.forgetContainer}>
-          <Text style={styles.forgetTxt}>Forgot Password? </Text>
-        </TouchableOpacity>
-      </View>
-      <View style={{ width: SCREEN.width * 0.9 }}>
-        <TouchableOpacity style={styles.loginBtn} activeOpacity={0.7}>
-          <Text style={styles.loginBtnText}>Log In</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.createAccView}>
-        <Text style={styles.createAccText}>New to the community?</Text>
-        <TouchableOpacity style={styles.createAccBtn}>
-          <Text style={styles.createAccBtnText}>Create an account</Text>
-        </TouchableOpacity>
-      </View>
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.BACKGROUND_LIGHT }}>
+      <KeyboardAvoidingView
+        style={styles.mainContainer}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        {/* <ScrollView
+          contentContainerStyle={styles.mainContainer}
+          keyboardShouldPersistTaps="handled"
+        > */}
+        <View style={SHADOW.card}>
+          <Image
+            style={[styles.imageStyle]}
+            source={require('../../assets/Images/UniMartLogo.png')}
+          />
+        </View>
+        <Text style={styles.appName}>UniMart</Text>
+        <Text style={styles.heading}>Welcome</Text>
+        <Text style={styles.description}>
+          Please Sign in to Continue to your UniMart Store
+        </Text>
+        <View style={styles.inputContainer}>
+          <Text style={styles.inputText}>University Email</Text>
+          <View style={styles.input}>
+            <Mail size={20} strokeWidth={2} color={COLORS.TEXT_MUTED} />
+            <TextInput
+              placeholder="yourname@univerdity.edu"
+              style={styles.inputField}
+              value={email}
+              onChangeText={setEmail}
+            />
+          </View>
+          <Text style={styles.inputText}>Password</Text>
+          <View style={styles.input}>
+            <LockKeyhole size={20} strokeWidth={2} color={COLORS.TEXT_MUTED} />
+            <TextInput
+              placeholder="Password"
+              style={styles.inputField}
+              secureTextEntry
+              value={password}
+              onChangeText={setPassword}
+            />
+          </View>
+          {error ? (
+            <Text style={{ color: 'red', marginTop: 5 }}>{error}</Text>
+          ) : null}
+        </View>
+
+        <View style={{ width: SCREEN.width * 0.9 }}>
+          <TouchableOpacity
+            style={styles.forgetContainer}
+            onPress={() => navigation.navigate('ForgetPasswordScreen')}
+          >
+            <Text style={styles.forgetTxt}>Forgot Password? </Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{ width: SCREEN.width * 0.9 }}>
+          <TouchableOpacity
+            style={styles.loginBtn}
+            activeOpacity={0.7}
+            onPress={handleLogin}
+          >
+            <Text style={styles.loginBtnText}>Log In</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.createAccView}>
+          <Text style={styles.createAccText}>New to the community?</Text>
+          <TouchableOpacity
+            style={styles.createAccBtn}
+            onPress={() => navigation.navigate('SignUpScreen')}
+          >
+            <Text style={styles.createAccBtnText}>Create an account</Text>
+          </TouchableOpacity>
+        </View>
+        {/* </ScrollView> */}
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -100,12 +169,19 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.SEMIBOLD,
   },
   input: {
-    paddingVertical: SPACING.lg,
-    backgroundColor: COLORS.INPUT_BACKGROUND,
-    paddingHorizontal: SPACING.lg,
-    borderRadius: RADIUS.lg,
     borderWidth: 1,
+    borderRadius: RADIUS.lg,
     borderColor: COLORS.BORDER,
+    backgroundColor: COLORS.INPUT_BACKGROUND,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.lg,
+    gap: 10,
+  },
+  inputField: {
+    backgroundColor: COLORS.INPUT_BACKGROUND,
+    flex: 1,
   },
   forgetContainer: {
     marginVertical: SPACING.md,

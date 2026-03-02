@@ -6,8 +6,10 @@ export const COLORS = {
   // Primary Brand
   PRIMARY_DARK: "#112473",
   PRIMARY_DARK1: "#ad7b06",
+  PRIMARY_LIGHT: "rgba(173, 123, 6, 0.2)",
   PRIMARY: "#203EE2",
   PRIMARY_BRIGHT: "#2143E7",
+  PRIMARY_BLACK: "#000000",
 
   // Button
   BUTTON_PRIMARY: "#2563EB",

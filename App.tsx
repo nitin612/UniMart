@@ -1,11 +1,10 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
-import { COLORS, FONTS } from './src/Constants/theme';
-import LoginScreen from './src/Screens/Auth/LoginScreen';
+import AuthStack from "./src/Navigation/AuthStack"
 
 const App = () => {
   return (
-  <LoginScreen />
+  <AuthStack />
   );
 };
 

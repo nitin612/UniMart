@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
 } from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -60,103 +61,113 @@ const SignUpScreen = () => {
   };
 
   return (
-    <SafeAreaView
-      style={styles.mainContainer}
-      // behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-    >
-      <View style={styles.backButton}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <ArrowLeft size={25} strokeWidth={2.5} />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.upperContainer}>
-        <Text style={styles.createAccText}>Create Account</Text>
-        <Text style={styles.descriptionText}>
-          join your University's secure trading network.
-        </Text>
-      </View>
-      <View style={styles.iconContainer}>
-        <View style={styles.iconContainerRow}>
-          <View style={styles.twoRow}>
-            <Image
-              source={require('../../assets/Images/UniMartLogo.png')}
-              style={[styles.imageStyle]}
-            />
+    <SafeAreaView style={styles.mainContainer}>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.backButton}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
+              <ArrowLeft size={25} strokeWidth={2.5} />
+            </TouchableOpacity>
           </View>
-          <View>
-            <Text style={styles.iconContainerHeadText}>UniMart</Text>
-            <Text style={styles.iconContainerDescriptionText}>
-              Varified Student Community
+          <View style={styles.upperContainer}>
+            <Text style={styles.createAccText}>Create Account</Text>
+            <Text style={styles.descriptionText}>
+              join your University's secure trading network.
             </Text>
           </View>
-        </View>
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputText}>FULL NAME</Text>
-        <View style={styles.input}>
-          <User size={20} strokeWidth={2} color={COLORS.TEXT_MUTED} />
-          <TextInput
-            placeholder="Full Name"
-            style={styles.inputField}
-            value={name}
-            onChangeText={setName}
-          />
-        </View>
-        <Text style={styles.inputText}>UNIVERSITY EMAIL</Text>
-        <View style={styles.input}>
-          <Mail size={20} strokeWidth={2} color={COLORS.TEXT_MUTED} />
-          <TextInput
-            placeholder="yourname@univerdity.edu"
-            style={styles.inputField}
-            value={email}
-            onChangeText={setEmail}
-          />
-        </View>
-        <Text style={styles.inputText}>PASSWORD</Text>
-        <View style={styles.input}>
-          <LockKeyhole size={20} strokeWidth={2} color={COLORS.TEXT_MUTED} />
-          <TextInput
-            placeholder="Atleast 8 characters"
-            style={styles.inputField}
-            value={password}
-            onChangeText={setPassword}
-            secureTextEntry
-          />
-        </View>
-        <Text style={styles.inputText}>CONFIRM PASSWORD</Text>
-        <View style={styles.input}>
-          <LockKeyhole size={20} strokeWidth={2} color={COLORS.TEXT_MUTED} />
-          <TextInput
-            placeholder="Re-enter password"
-            style={styles.inputField}
-            value={confirmPassword}
-            onChangeText={setConfirmPassword}
-            secureTextEntry
-          />
-        </View>
-        {error ? (
-          <Text style={{ color: 'red', marginTop: 5 }}>{error}</Text>
-        ) : null}
+          <View style={styles.iconContainer}>
+            <View style={styles.iconContainerRow}>
+              <View style={styles.twoRow}>
+                <Image
+                  source={require('../../assets/Images/UniMartLogo.png')}
+                  style={[styles.imageStyle]}
+                />
+              </View>
+              <View>
+                <Text style={styles.iconContainerHeadText}>UniMart</Text>
+                <Text style={styles.iconContainerDescriptionText}>
+                  Varified Student Community
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputText}>FULL NAME</Text>
+            <View style={styles.input}>
+              <User size={20} strokeWidth={2} color={COLORS.TEXT_MUTED} />
+              <TextInput
+                placeholder="Full Name"
+                style={styles.inputField}
+                value={name}
+                onChangeText={setName}
+              />
+            </View>
+            <Text style={styles.inputText}>UNIVERSITY EMAIL</Text>
+            <View style={styles.input}>
+              <Mail size={20} strokeWidth={2} color={COLORS.TEXT_MUTED} />
+              <TextInput
+                placeholder="yourname@univerdity.edu"
+                style={styles.inputField}
+                value={email}
+                onChangeText={setEmail}
+                autoCapitalize="none"
+                keyboardType="email-address"
+              />
+            </View>
+            <Text style={styles.inputText}>PASSWORD</Text>
+            <View style={styles.input}>
+              <LockKeyhole size={20} strokeWidth={2} color={COLORS.TEXT_MUTED} />
+              <TextInput
+                placeholder="Atleast 8 characters"
+                style={styles.inputField}
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+              />
+            </View>
+            <Text style={styles.inputText}>CONFIRM PASSWORD</Text>
+            <View style={styles.input}>
+              <LockKeyhole size={20} strokeWidth={2} color={COLORS.TEXT_MUTED} />
+              <TextInput
+                placeholder="Re-enter password"
+                style={styles.inputField}
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                secureTextEntry
+              />
+            </View>
+            {error ? (
+              <Text style={{ color: 'red', marginTop: 5 }}>{error}</Text>
+            ) : null}
 
-        <View style={styles.createAccView}>
-          <Text style={styles.createAccText2}>Already have an Account?</Text>
-          <TouchableOpacity
-            style={styles.createAccBtn}
-            onPress={() => navigation.goBack()}
-          >
-            <Text style={styles.createAccBtnText}>Log In</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-      <View style={styles.button}>
-        <TouchableOpacity
-          style={styles.signBtn}
-          activeOpacity={0.7}
-          onPress={handleSignUp}
-        >
-          <Text style={styles.signBtnText}>Create Secure Account</Text>
-        </TouchableOpacity>
-      </View>
+            <View style={styles.createAccView}>
+              <Text style={styles.createAccText2}>Already have an Account?</Text>
+              <TouchableOpacity
+                style={styles.createAccBtn}
+                onPress={() => navigation.goBack()}
+              >
+                <Text style={styles.createAccBtnText}>Log In</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity
+              style={styles.signBtn}
+              activeOpacity={0.7}
+              onPress={handleSignUp}
+            >
+              <Text style={styles.signBtnText}>Create Secure Account</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -166,14 +177,16 @@ export default SignUpScreen;
 const styles = StyleSheet.create({
   mainContainer: {
     backgroundColor: COLORS.BACKGROUND_LIGHT,
-    justifyContent: 'center',
-    paddingHorizontal: SPACING.lg,
     flex: 1,
   },
+  scrollContent: {
+    flexGrow: 1,
+    paddingHorizontal: SPACING.lg,
+    paddingBottom: SPACING.xxxl,
+  },
   backButton: {
-    position: 'absolute',
-    top: 80,
-    marginHorizontal: SPACING.lg,
+    marginTop: 60,
+    marginBottom: SPACING.lg,
     backgroundColor: 'rgba(0,0,0,0.1)',
     borderRadius: RADIUS.round,
     width: 40,
@@ -261,10 +274,9 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.BOLD,
     color: COLORS.PRIMARY_DARK1,
   },
-  button: {
+  buttonContainer: {
     width: SCREEN.width * 0.9,
-    position: 'absolute',
-    bottom: 40,
+    marginTop: SPACING.xl,
     alignSelf: 'center',
   },
   signBtn: {

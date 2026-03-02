@@ -51,78 +51,81 @@ const LoginScreen = () => {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.BACKGROUND_LIGHT }}>
       <KeyboardAvoidingView
-        style={styles.mainContainer}
+        style={{ flex: 1 }}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        {/* <ScrollView
-          contentContainerStyle={styles.mainContainer}
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
-        > */}
-        <View style={SHADOW.card}>
-          <Image
-            style={[styles.imageStyle]}
-            source={require('../../assets/Images/UniMartLogo.png')}
-          />
-        </View>
-        <Text style={styles.appName}>UniMart</Text>
-        <Text style={styles.heading}>Welcome</Text>
-        <Text style={styles.description}>
-          Please Sign in to Continue to your UniMart Store
-        </Text>
-        <View style={styles.inputContainer}>
-          <Text style={styles.inputText}>University Email</Text>
-          <View style={styles.input}>
-            <Mail size={20} strokeWidth={2} color={COLORS.TEXT_MUTED} />
-            <TextInput
-              placeholder="yourname@univerdity.edu"
-              style={styles.inputField}
-              value={email}
-              onChangeText={setEmail}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={SHADOW.card}>
+            <Image
+              style={[styles.imageStyle]}
+              source={require('../../assets/Images/UniMartLogo.png')}
             />
           </View>
-          <Text style={styles.inputText}>Password</Text>
-          <View style={styles.input}>
-            <LockKeyhole size={20} strokeWidth={2} color={COLORS.TEXT_MUTED} />
-            <TextInput
-              placeholder="Password"
-              style={styles.inputField}
-              secureTextEntry
-              value={password}
-              onChangeText={setPassword}
-            />
+          <Text style={styles.appName}>UniMart</Text>
+          <Text style={styles.heading}>Welcome</Text>
+          <Text style={styles.description}>
+            Please Sign in to Continue to your UniMart Store
+          </Text>
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputText}>University Email</Text>
+            <View style={styles.input}>
+              <Mail size={20} strokeWidth={2} color={COLORS.TEXT_MUTED} />
+              <TextInput
+                placeholder="yourname@univerdity.edu"
+                style={styles.inputField}
+                value={email}
+                onChangeText={setEmail}
+                autoCapitalize="none"
+                keyboardType="email-address"
+              />
+            </View>
+            <Text style={styles.inputText}>Password</Text>
+            <View style={styles.input}>
+              <LockKeyhole size={20} strokeWidth={2} color={COLORS.TEXT_MUTED} />
+              <TextInput
+                placeholder="Password"
+                style={styles.inputField}
+                secureTextEntry
+                value={password}
+                onChangeText={setPassword}
+              />
+            </View>
+            {error ? (
+              <Text style={{ color: 'red', marginTop: 5 }}>{error}</Text>
+            ) : null}
           </View>
-          {error ? (
-            <Text style={{ color: 'red', marginTop: 5 }}>{error}</Text>
-          ) : null}
-        </View>
 
-        <View style={{ width: SCREEN.width * 0.9 }}>
-          <TouchableOpacity
-            style={styles.forgetContainer}
-            onPress={() => navigation.navigate('ForgetPasswordScreen')}
-          >
-            <Text style={styles.forgetTxt}>Forgot Password? </Text>
-          </TouchableOpacity>
-        </View>
-        <View style={{ width: SCREEN.width * 0.9 }}>
-          <TouchableOpacity
-            style={styles.loginBtn}
-            activeOpacity={0.7}
-            onPress={handleLogin}
-          >
-            <Text style={styles.loginBtnText}>Log In</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.createAccView}>
-          <Text style={styles.createAccText}>New to the community?</Text>
-          <TouchableOpacity
-            style={styles.createAccBtn}
-            onPress={() => navigation.navigate('SignUpScreen')}
-          >
-            <Text style={styles.createAccBtnText}>Create an account</Text>
-          </TouchableOpacity>
-        </View>
-        {/* </ScrollView> */}
+          <View style={{ width: SCREEN.width * 0.9 }}>
+            <TouchableOpacity
+              style={styles.forgetContainer}
+              onPress={() => navigation.navigate('ForgetPasswordScreen')}
+            >
+              <Text style={styles.forgetTxt}>Forgot Password? </Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{ width: SCREEN.width * 0.9 }}>
+            <TouchableOpacity
+              style={styles.loginBtn}
+              activeOpacity={0.7}
+              onPress={handleLogin}
+            >
+              <Text style={styles.loginBtnText}>Log In</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.createAccView}>
+            <Text style={styles.createAccText}>New to the community?</Text>
+            <TouchableOpacity
+              style={styles.createAccBtn}
+              onPress={() => navigation.navigate('SignUpScreen')}
+            >
+              <Text style={styles.createAccBtnText}>Create an account</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -131,6 +134,13 @@ const LoginScreen = () => {
 export default LoginScreen;
 
 const styles = StyleSheet.create({
+  scrollContent: {
+    flexGrow: 1,
+    backgroundColor: COLORS.BACKGROUND_LIGHT,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: SPACING.xxxl,
+  },
   mainContainer: {
     flex: 1,
     backgroundColor: COLORS.BACKGROUND_LIGHT,

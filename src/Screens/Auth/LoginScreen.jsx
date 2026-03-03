@@ -30,12 +30,13 @@ const LoginScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [isActive, setIsActive] = useState(false);
 
   const logInSchema = Yup.object({
     email: Yup.string()
       .required('Email is required')
       .email('Invalid email format'),
-    password: Yup.string().required('Password is required'),
+    password: Yup.string().required('Password is required').min(6)
   });
 
   const handleLogin = async () => {
@@ -43,6 +44,7 @@ const LoginScreen = () => {
       await logInSchema.validate({ email, password });
       setError('');
       console.log('User is valid');
+      navigation.replace('BottomTabs');
     } catch (error) {
       setError(error.message);
     }
@@ -85,7 +87,11 @@ const LoginScreen = () => {
             </View>
             <Text style={styles.inputText}>Password</Text>
             <View style={styles.input}>
-              <LockKeyhole size={20} strokeWidth={2} color={COLORS.TEXT_MUTED} />
+              <LockKeyhole
+                size={20}
+                strokeWidth={2}
+                color={COLORS.TEXT_MUTED}
+              />
               <TextInput
                 placeholder="Password"
                 style={styles.inputField}

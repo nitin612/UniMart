@@ -1,16 +1,17 @@
 import { StyleSheet, Text, View } from 'react-native';
 import React from 'react';
-import AuthStack from './src/Navigation/AuthStack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { NavigationContainer } from '@react-navigation/native';
 
-const App = () => {
+
+const RootStack = () => {
+  const Stack = createNativeStackNavigator();
   return (
     <NavigationContainer>
-      <AuthStack />
     </NavigationContainer>
   );
 };
 
-export default App;
+export default RootStack;
 
 const styles = StyleSheet.create({});

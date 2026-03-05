@@ -36,6 +36,10 @@ export const COLORS = {
   // Error
   ERROR: "#DC2626",
   ERROR_LIGHT: "#FEE2E2",
+
+  TRANSPARENT:"rgba(0,0,0,0.2)",
+  TRANSPARENT0:"rgba(0,0,0,0.1)",
+  TRANSPARENT1:"rgba(255,255,255,0.5)",
 };
 
 export const FONTS = {

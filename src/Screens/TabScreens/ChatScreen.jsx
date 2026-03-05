@@ -3,7 +3,13 @@ import React from 'react'
 
 const ChatScreen = () => {
   return (
-    <View>
+    <View 
+    style={{
+      flex:1,
+      justifyContent:"center",
+      alignItems:"center",
+    }}
+    >
       <Text>ChatScreen</Text>
     </View>
   )

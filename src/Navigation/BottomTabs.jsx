@@ -36,7 +36,7 @@ const BottomTabs = () => {
         options={{
           tabBarIcon: ({ focused }) => (
             <House
-              size={26}
+              size={24}
               color={
                 focused ? COLORS.PRIMARY_DARK1focused : COLORS.PRIMARY_BLACK
               }
@@ -49,7 +49,7 @@ const BottomTabs = () => {
         name="CartScreen"
         component={CartScreen}
         options={{
-          tabBarIcon: () => <ShoppingCart size={26} color="black" />,
+          tabBarIcon: () => <ShoppingCart size={24} color="black" />,
         }}
       />
       <Tab.Screen
@@ -82,14 +82,14 @@ const BottomTabs = () => {
         name="ChatScreen"
         component={ChatScreen}
         options={{
-          tabBarIcon: () => <MessageSquareMore size={26} color="black" />,
+          tabBarIcon: () => <MessageSquareMore size={24} color="black" />,
         }}
       />
       <Tab.Screen
         name="ProfileScreen"
         component={ProfileScreen}
         options={{
-          tabBarIcon: () => <UserRoundPen size={26} color="black" />,
+          tabBarIcon: () => <UserRoundPen size={24} color="black" />,
         }}
       />
     </Tab.Navigator>

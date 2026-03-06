@@ -1,4 +1,11 @@
-import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  Image,
+  ScrollView,
+} from 'react-native';
 import React from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -17,82 +24,106 @@ import {
   NotebookTabs,
   Settings,
   BadgeQuestionMark,
+  LogOut,
 } from 'lucide-react-native';
 
 const ProfileScreen = () => {
   return (
-    <SafeAreaView style={styles.Container}>
-      <View style={styles.UpperContainer}>
-        <View style={styles.imageConatiner}>
-          <Image
-            source={{
-              uri: 'https://images.unsplash.com/photo-1609505848912-b7c3b8b4beda?q=80&w=1065&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-            }}
-            style={styles.profileImage}
-          />
-        </View>
-        <View style={styles.textContainer}>
-          <Text style={styles.nameStyle}>Scarlet Johnson</Text>
-          <Text style={styles.imageDescription}>
-            Computer Science | Stanford University
-          </Text>
-        </View>
-        <View style={styles.basicInfoContainer}>
-          <View style={styles.bacicInfo}>
-            <Text style={styles.textValue}>12</Text>
-            <Text style={styles.textValueName}>LISTINGS</Text>
+    <ScrollView style={styles.Container}>
+      <SafeAreaView>
+        <View style={styles.UpperContainer}>
+          <View style={styles.imageConatiner}>
+            <Image
+              source={{
+                uri: 'https://images.unsplash.com/photo-1609505848912-b7c3b8b4beda?q=80&w=1065&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+              }}
+              style={styles.profileImage}
+            />
           </View>
-          <View
-            style={{
-              height: 40,
-              backgroundColor: COLORS.TRANSPARENT1,
-              width: 1,
-            }}
-          />
-          <View style={styles.bacicInfo}>
-            <Text style={styles.textValue}>4.9</Text>
-            <Text style={styles.textValueName}>RATING</Text>
+          <View style={styles.textContainer}>
+            <Text style={styles.nameStyle}>Scarlet Johnson</Text>
+            <Text style={styles.imageDescription}>
+              Computer Science | Stanford University
+            </Text>
           </View>
-          <View
-            style={{
-              height: 40,
-              backgroundColor: COLORS.TRANSPARENT1,
-              width: 1,
-            }}
-          />
-          <View style={styles.bacicInfo}>
-            <Text style={styles.textValue}>28</Text>
-            <Text style={styles.textValueName}>SOLD</Text>
+          <View style={styles.basicInfoContainer}>
+            <View style={styles.bacicInfo}>
+              <Text style={styles.textValue}>12</Text>
+              <Text style={styles.textValueName}>LISTINGS</Text>
+            </View>
+            <View
+              style={{
+                height: 40,
+                backgroundColor: COLORS.TRANSPARENT1,
+                width: 1,
+              }}
+            />
+            <View style={styles.bacicInfo}>
+              <Text style={styles.textValue}>4.9</Text>
+              <Text style={styles.textValueName}>RATING</Text>
+            </View>
+            <View
+              style={{
+                height: 40,
+                backgroundColor: COLORS.TRANSPARENT1,
+                width: 1,
+              }}
+            />
+            <View style={styles.bacicInfo}>
+              <Text style={styles.textValue}>28</Text>
+              <Text style={styles.textValueName}>SOLD</Text>
+            </View>
           </View>
         </View>
-      </View>
-      <View style={styles.BottomContainer}>
-        <View>
-          <Text style={styles.statementText}>ACCOUNT SETTINGS</Text>
+        <View style={styles.BottomContainer}>
+          <View style={{ marginBottom: 10 }}>
+            <Text style={styles.statementText}>ACCOUNT SETTINGS</Text>
+          </View>
+          <ProfileOptionsListing
+            backgroundColor={COLORS.BLUE_T}
+            logo={User}
+            name={'Edit Profile'}
+            icon={ChevronRight}
+            iconColor={'darkblue'}
+          />
+          <ProfileOptionsListing
+            backgroundColor={COLORS.ORANGE_T}
+            logo={NotebookTabs}
+            name={'My Listings'}
+            icon={ChevronRight}
+            iconColor={COLORS.orange}
+          />
+          <ProfileOptionsListing
+            backgroundColor={COLORS.GREEN_T}
+            logo={BadgeIndianRupee}
+            name={'Transactions'}
+            icon={ChevronRight}
+            iconColor={COLORS.green}
+          />
+          <ProfileOptionsListing
+            backgroundColor={COLORS.PURPLE_T}
+            logo={Settings}
+            name={'Settings'}
+            icon={ChevronRight}
+            iconColor={COLORS.purple}
+          />
+          <View style={{ marginBottom: 10 }}>
+            <Text style={styles.statementText}>SUPPORT</Text>
+          </View>
+          <ProfileOptionsListing
+            backgroundColor={COLORS.GREY_T}
+            logo={BadgeQuestionMark}
+            name={'Help Center'}
+            icon={ChevronRight}
+            iconColor={COLORS.grey}
+          />
+          <TouchableOpacity style={styles.logoutView}>
+            <LogOut size={24} color={'red'} strokeWidth={2.5} />
+            <Text style={styles.logOutText}>Log Out</Text>
+          </TouchableOpacity>
         </View>
-        <ProfileOptionsListing
-          color={COLORS.BUTTON_PRIMARY}
-          logo={User}
-          name={'Edit Profile'}
-          icon={ChevronRight}
-        />
-        <ProfileOptionsListing
-          logo={NotebookTabs}
-          name={'My Listings'}
-          icon={ChevronRight}
-        />
-        <ProfileOptionsListing
-          logo={BadgeIndianRupee}
-          name={'Transactions'}
-          icon={ChevronRight}
-        />
-        <ProfileOptionsListing
-          logo={Settings}
-          name={'Settings'}
-          icon={ChevronRight}
-        />
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </ScrollView>
   );
 };
 
@@ -169,5 +200,23 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.BOLD,
     fontSize: FONT_SIZES.sm,
     color: COLORS.TEXT_MUTED,
+  },
+  logoutView: {
+    marginVertical: SPACING.lg,
+    paddingVertical: SPACING.lg,
+    backgroundColor: COLORS.RED_T,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: RADIUS.md,
+    marginBottom: 60,
+    alignSelf: 'center',
+    width: SCREEN.width * 0.85,
+    flexDirection: 'row',
+    gap: 10,
+  },
+  logOutText: {
+    fontFamily: FONTS.SEMIBOLD,
+    fontSize: FONT_SIZES.lg,
+    color: COLORS.red,
   },
 });

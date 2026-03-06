@@ -8,9 +8,12 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import API from '../../api/Api';
+
 import {
   FONT_SIZES,
   FONTS,
@@ -24,6 +27,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { ArrowLeft, User, Mail, LockKeyhole } from 'lucide-react-native';
 import * as Yup from 'yup';
+import { register } from '../../api/apiRoutes';
 
 const SignUpScreen = () => {
   const navigation = useNavigation();
@@ -32,6 +36,7 @@ const SignUpScreen = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
+  const [isLoading, setLoading] = useState(false);
 
   const signUpSchema = Yup.object({
     name: Yup.string().required('Name is required'),
@@ -53,7 +58,12 @@ const SignUpScreen = () => {
         confirmPassword,
       });
       setError('');
+      setLoading(true);
+      await register(name, email, password);
+      setLoading(false);
+      navigation.replace("LoginScreen")
       console.log('User is signed Up');
+
     } catch (err) {
       setError(err.message);
       console.log(err);
@@ -123,7 +133,11 @@ const SignUpScreen = () => {
             </View>
             <Text style={styles.inputText}>PASSWORD</Text>
             <View style={styles.input}>
-              <LockKeyhole size={20} strokeWidth={2} color={COLORS.TEXT_MUTED} />
+              <LockKeyhole
+                size={20}
+                strokeWidth={2}
+                color={COLORS.TEXT_MUTED}
+              />
               <TextInput
                 placeholder="Atleast 8 characters"
                 style={styles.inputField}
@@ -134,7 +148,11 @@ const SignUpScreen = () => {
             </View>
             <Text style={styles.inputText}>CONFIRM PASSWORD</Text>
             <View style={styles.input}>
-              <LockKeyhole size={20} strokeWidth={2} color={COLORS.TEXT_MUTED} />
+              <LockKeyhole
+                size={20}
+                strokeWidth={2}
+                color={COLORS.TEXT_MUTED}
+              />
               <TextInput
                 placeholder="Re-enter password"
                 style={styles.inputField}
@@ -148,7 +166,9 @@ const SignUpScreen = () => {
             ) : null}
 
             <View style={styles.createAccView}>
-              <Text style={styles.createAccText2}>Already have an Account?</Text>
+              <Text style={styles.createAccText2}>
+                Already have an Account?
+              </Text>
               <TouchableOpacity
                 style={styles.createAccBtn}
                 onPress={() => navigation.goBack()}
@@ -163,7 +183,11 @@ const SignUpScreen = () => {
               activeOpacity={0.7}
               onPress={handleSignUp}
             >
-              <Text style={styles.signBtnText}>Create Secure Account</Text>
+              {isLoading ? (
+                <ActivityIndicator size="large" color="#2EBAAF" />
+              ) : (
+                <Text style={styles.signBtnText}>Create Secure Account</Text>
+              )}
             </TouchableOpacity>
           </View>
         </ScrollView>

@@ -8,9 +8,11 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   FONT_SIZES,
   FONTS,
@@ -24,27 +26,31 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { Mail, LockKeyhole } from 'lucide-react-native';
 import * as Yup from 'yup';
+import API from '../../api/Api';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [isActive, setIsActive] = useState(false);
+  const [isloading, setIsLoading] = useState(null);
 
   const logInSchema = Yup.object({
     email: Yup.string()
       .required('Email is required')
       .email('Invalid email format'),
-    password: Yup.string().required('Password is required').min(6)
+    password: Yup.string().required('Password is required').min(6),
   });
 
   const handleLogin = async () => {
     try {
+      setIsLoading(true);
       await logInSchema.validate({ email, password });
       setError('');
-      console.log('User is valid');
-      navigation.replace('BottomTabs');
+      const response = await API.post('api/auth/login', { email, password });
+      console.log('hjgfd', response.data.token);
+      await AsyncStorage.setItem('token', response.data.token);
+      setIsLoading(false);
     } catch (error) {
       setError(error.message);
     }
@@ -119,7 +125,11 @@ const LoginScreen = () => {
               activeOpacity={0.7}
               onPress={handleLogin}
             >
-              <Text style={styles.loginBtnText}>Log In</Text>
+              {isloading ? (
+                <ActivityIndicator size={20} color={'white'} />
+              ) : (
+                <Text style={styles.loginBtnText}>Log In</Text>
+              )}
             </TouchableOpacity>
           </View>
           <View style={styles.createAccView}>

@@ -13,8 +13,7 @@ const AuthStack = () => {
       screenOptions={{
         headerShown: false,
       }}
-      // initialRouteName="LoginScreen"
-      initialRouteName="BottomTabs"
+      initialRouteName="LoginScreen"
     >
       <Stack.Screen name="LoginScreen" component={LoginScreen} />
       <Stack.Screen name="SignUpScreen" component={SignUpScreen} />
@@ -22,7 +21,6 @@ const AuthStack = () => {
         name="ForgetPasswordScreen"
         component={ForgetPasswordScreen}
       />
-      <Stack.Screen name="BottomTabs" component={BottomTabs} />
     </Stack.Navigator>
   );
 };

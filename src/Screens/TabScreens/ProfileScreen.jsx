@@ -26,8 +26,14 @@ import {
   BadgeQuestionMark,
   LogOut,
 } from 'lucide-react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProfileScreen = () => {
+
+  const logOut = async () => {
+    await AsyncStorage.clear();
+  };
+
   return (
     <ScrollView style={styles.Container}>
       <SafeAreaView>
@@ -117,7 +123,7 @@ const ProfileScreen = () => {
             icon={ChevronRight}
             iconColor={COLORS.grey}
           />
-          <TouchableOpacity style={styles.logoutView}>
+          <TouchableOpacity style={styles.logoutView} onPress={logOut}>
             <LogOut size={24} color={'red'} strokeWidth={2.5} />
             <Text style={styles.logOutText}>Log Out</Text>
           </TouchableOpacity>

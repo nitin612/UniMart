@@ -1,6 +1,11 @@
-import API from './Api';
+// import Api from './Api';
 
-export const register = async (name, email, password) => {
-  const res = await API.post('api/auth/register', { name, email, password });
-  return res.data;
-};
+// export const register = async (payload) => {
+//   const response = await Api.post('api/auth/register', payload);
+//   return response;
+// };
+
+// export const login = async (payload) => {
+//   const response = await Api.post('api/auth/login', payload);
+//   return response;
+// };

@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import API from '../../api/Api';
+import Api from '../../api/Api';
 
 import {
   FONT_SIZES,
@@ -59,11 +59,13 @@ const SignUpScreen = () => {
       });
       setError('');
       setLoading(true);
-      await register(name, email, password);
+      const response = await Api.post('api/auth/register', {
+        name,
+        email,
+        password,
+      });
       setLoading(false);
-      navigation.replace("LoginScreen")
-      console.log('User is signed Up');
-
+      navigation.replace('LoginScreen');
     } catch (err) {
       setError(err.message);
       console.log(err);

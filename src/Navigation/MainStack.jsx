@@ -15,14 +15,9 @@ const MainStack = () => {
       screenOptions={{
         headerShown: false,
       }}
-      initialRouteName='BottomTabs'
     >
-      <Stack.Screen name="HomeScreen" component={HomeScreen} />
-      <Stack.Screen name="CartScreen" component={CartScreen} />
-      <Stack.Screen name="ChatScreen" component={ChatScreen} />
-      <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
-      <Stack.Screen name="AddProduct" component={AddProduct} />
       <Stack.Screen name="BottomTabs" component={BottomTabs} />
+      <Stack.Screen name="AddProduct" component={AddProduct} />
     </Stack.Navigator>
   );
 };

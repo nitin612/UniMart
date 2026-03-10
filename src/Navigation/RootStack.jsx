@@ -7,7 +7,7 @@ import AuthStack from './AuthStack';
 
 const RootStack = () => {
   const [token, setToken] = useState(null);
-  const [isloading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     checkLogin();
@@ -20,11 +20,19 @@ const RootStack = () => {
         setToken(savedToken);
       }
     } catch (err) {
-      console.error('error occured during login', err);
+      console.error('error occurred during login', err);
     } finally {
       setIsLoading(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
 
   return (
     <NavigationContainer>

@@ -17,7 +17,6 @@ const MainStack = () => {
       }}
     >
       <Stack.Screen name="BottomTabs" component={BottomTabs} />
-      <Stack.Screen name="AddProduct" component={AddProduct} />
     </Stack.Navigator>
   );
 };

@@ -4,9 +4,14 @@ import { NavigationContainer } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MainStack from './MainStack';
 import AuthStack from './AuthStack';
+import { useSelector, useDispatch } from 'react-redux';
+import { logIn } from '../redux/slices/authSlice';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 const RootStack = () => {
-  const [token, setToken] = useState(null);
+  const Stack = createNativeStackNavigator();
+  const { token, isUserValid } = useSelector(state => state.auth);
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -16,8 +21,9 @@ const RootStack = () => {
   const checkLogin = async () => {
     try {
       const savedToken = await AsyncStorage.getItem('token');
+
       if (savedToken) {
-        setToken(savedToken);
+        dispatch(logIn(savedToken));
       }
     } catch (err) {
       console.error('error occurred during login', err);
@@ -36,7 +42,13 @@ const RootStack = () => {
 
   return (
     <NavigationContainer>
-      {token ? <MainStack /> : <AuthStack />}
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        {!isUserValid ? (
+          <Stack.Screen name="AuthStack" component={AuthStack} />
+        ) : (
+          <Stack.Screen name="MainStack" component={MainStack} />
+        )}
+      </Stack.Navigator>
     </NavigationContainer>
   );
 };

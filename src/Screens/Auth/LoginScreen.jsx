@@ -27,6 +27,8 @@ import { useNavigation } from '@react-navigation/native';
 import { Mail, LockKeyhole } from 'lucide-react-native';
 import * as Yup from 'yup';
 import API from '../../api/Api';
+import { useDispatch } from 'react-redux';
+import { logIn } from '../../redux/slices/authSlice';
 
 const LoginScreen = () => {
   const navigation = useNavigation();
@@ -34,6 +36,7 @@ const LoginScreen = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isloading, setIsLoading] = useState(null);
+  const dispatch = useDispatch();
 
   const logInSchema = Yup.object({
     email: Yup.string()
@@ -48,8 +51,9 @@ const LoginScreen = () => {
       await logInSchema.validate({ email, password });
       setError('');
       const response = await API.post('api/auth/login', { email, password });
-      console.log('hjgfd', response.data.token);
-      await AsyncStorage.setItem('token', response.data.token);
+      const token = response.data.token;
+      await AsyncStorage.setItem('token', token);
+      dispatch(logIn(token));
       setIsLoading(false);
     } catch (error) {
       setError(error.message);

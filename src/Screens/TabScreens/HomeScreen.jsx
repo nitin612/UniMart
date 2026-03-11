@@ -38,7 +38,7 @@ const DUMMY_PRODUCTS = [
   {
     id: '2',
     title: 'iPad Pro M2 2022',
-    price: 650.0,
+    price: 1600.0,
     category: 'ELECTRONICS',
     image:
       'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&q=80&w=800',
@@ -53,7 +53,7 @@ const DUMMY_PRODUCTS = [
   {
     id: '3',
     title: 'Mini Fridge Black',
-    price: 60.0,
+    price: 1500.0,
     category: 'DORM',
     image:
       'https://images.unsplash.com/photo-1584286595398-a59f21d313f5?auto=format&fit=crop&q=80&w=800',
@@ -68,7 +68,7 @@ const DUMMY_PRODUCTS = [
   {
     id: '4',
     title: 'Sony WH-1000XM4',
-    price: 180.0,
+    price: 8000.0,
     category: 'ELECTRONICS',
     image:
       'https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&q=80&w=800',
@@ -91,7 +91,7 @@ const HomeScreen = () => {
       <View style={styles.topBar}>
         <View>
           <Text style={styles.greetingText}>Hello, Scarlet!</Text>
-          <Text style={styles.discoverText}>Discover great deals</Text>
+          <Text style={styles.discoverText}>UniMart discover great deals</Text>
         </View>
         <TouchableOpacity style={styles.notificationBtn}>
           <Bell color={COLORS.PRIMARY_DARK1} size={24} />
@@ -158,8 +158,8 @@ const styles = StyleSheet.create({
   },
   discoverText: {
     fontFamily: FONTS.EXTRABOLD,
-    fontSize: FONT_SIZES.xxl,
-    color: COLORS.PRIMARY_DARK1, // Changed to theme brand color
+    fontSize: FONT_SIZES.xl,
+    color: COLORS.PRIMARY_DARK1,
   },
   notificationBtn: {
     width: 48,

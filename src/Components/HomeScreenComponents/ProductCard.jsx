@@ -51,7 +51,7 @@ export default function ProductCard({ item }) {
         <Text style={styles.conditionText}>{item.condition}</Text>
 
         <View style={styles.footerRow}>
-          <Text style={styles.price}>${item.price.toFixed(2)}</Text>
+          <Text style={styles.price}>₹{item.price.toFixed(2)}</Text>
           <TouchableOpacity style={styles.actionBtn}>
             <Plus color={COLORS.BACKGROUND} size={18} strokeWidth={3} />
           </TouchableOpacity>

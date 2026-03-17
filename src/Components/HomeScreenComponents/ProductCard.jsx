@@ -23,7 +23,7 @@ const CARD_WIDTH = (width - SPACING.lg * 2 - SPACING.md) / 2;
 
 export default function ProductCard({ item }) {
   return (
-    <View style={styles.card}>
+    <TouchableOpacity style={styles.card}>
       <View style={styles.imageContainer}>
         <Image
           source={{ uri: item.image }}
@@ -57,7 +57,7 @@ export default function ProductCard({ item }) {
           </TouchableOpacity>
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 

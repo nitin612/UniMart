@@ -27,11 +27,17 @@ import {
   LogOut,
 } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+import { logOut as logOutAction } from '../../redux/slices/authSlice';
 
 const ProfileScreen = () => {
+  const navigation = useNavigation();
+  const dispatch = useDispatch();
 
-  const logOut = async () => {
+  const handleLogOut = async () => {
     await AsyncStorage.clear();
+    dispatch(logOutAction());
   };
 
   return (
@@ -123,7 +129,7 @@ const ProfileScreen = () => {
             icon={ChevronRight}
             iconColor={COLORS.grey}
           />
-          <TouchableOpacity style={styles.logoutView} onPress={logOut}>
+          <TouchableOpacity style={styles.logoutView} onPress={handleLogOut}>
             <LogOut size={24} color={'red'} strokeWidth={2.5} />
             <Text style={styles.logOutText}>Log Out</Text>
           </TouchableOpacity>

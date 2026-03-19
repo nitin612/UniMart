@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,6 +6,8 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  Modal,
+  Image,
 } from 'react-native';
 import {
   Camera,
@@ -13,14 +15,54 @@ import {
   ShieldCheck,
   Send,
   ChevronDown,
+  CircleX,
 } from 'lucide-react-native';
-import { COLORS, FONTS, FONT_SIZES, SPACING, RADIUS } from '../../Constants/theme';
+import {
+  COLORS,
+  FONTS,
+  FONT_SIZES,
+  SPACING,
+  RADIUS,
+  SCREEN,
+} from '../../Constants/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 const AddProduct = () => {
+  const [image, setImage] = useState(null);
+  const [visible, setVisible] = useState(false);
+
+  const openCamera = async () => {
+    setVisible(false);
+    await new Promise(resolve => setTimeout(resolve, 300));
+    const result = await launchCamera({
+      mediaType: 'photo',
+      quality: 0.9,
+    });
+    if (!result.didCancel && result.assets?.length > 0) {
+      setImage(result.assets[0]);
+    }
+  };
+
+  const openPhotos = async () => {
+    setVisible(false);
+    await new Promise(resolve => setTimeout(resolve, 300));
+    const result = await launchImageLibrary({
+      mediaType: 'photo',
+      quality: 0.9,
+      selectionLimit: 4,
+    });
+    if (!result.didCancel && result.assets?.length > 0) {
+      setImage(result.assets[0].uri);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         {/* Sync Header from HomeScreen */}
         <View style={styles.headerContainer}>
           <Text style={styles.greetingText}>Post Your Product</Text>
@@ -31,17 +73,38 @@ const AddProduct = () => {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Photos (up to 4)</Text>
           <View style={styles.photoContainer}>
-            <TouchableOpacity style={styles.mainPhotoPlaceholder}>
-              <View style={styles.iconCircle}>
-                <Camera size={28} color={COLORS.PRIMARY_DARK1} strokeWidth={2.5} />
-              </View>
-              <Text style={styles.mainPhotoText}>Add Main Photo</Text>
-              <Text style={styles.subPhotoText}>Tap to open camera or gallery</Text>
-            </TouchableOpacity>
+            {image ? (
+              <TouchableOpacity
+                style={styles.mainPhotoPlaceholder}
+                onPress={() => setVisible(true)}
+              >
+                <Image source={{ uri: image }} style={styles.ImageStyle} />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.mainPhotoPlaceholder}
+                onPress={() => setVisible(true)}
+              >
+                <View style={styles.iconCircle}>
+                  <Camera
+                    size={28}
+                    color={COLORS.PRIMARY_DARK1}
+                    strokeWidth={2.5}
+                  />
+                </View>
+                <Text style={styles.mainPhotoText}>Add Main Photo</Text>
+                <Text style={styles.subPhotoText}>
+                  Tap to open camera or gallery
+                </Text>
+              </TouchableOpacity>
+            )}
 
             <View style={styles.smallPhotoRow}>
-              {[1, 2, 3].map((item) => (
-                <TouchableOpacity key={item} style={styles.smallPhotoPlaceholder}>
+              {[1, 2, 3].map(item => (
+                <TouchableOpacity
+                  key={item}
+                  style={styles.smallPhotoPlaceholder}
+                >
                   <Plus size={24} color={COLORS.TEXT_MUTED} />
                 </TouchableOpacity>
               ))}
@@ -85,7 +148,11 @@ const AddProduct = () => {
           <ShieldCheck size={20} color={COLORS.PRIMARY_DARK1} />
           <View style={styles.safetyTipTextContainer}>
             <Text style={styles.safetyTipTitle}>
-              Campus Safety Tip: <Text style={styles.safetyTipBody}>Only meet in public, well-lit areas on campus. Use the university's "Safe Swap Zone" for high-value items.</Text>
+              Campus Safety Tip:{' '}
+              <Text style={styles.safetyTipBody}>
+                Only meet in public, well-lit areas on campus. Use the
+                university's "Safe Swap Zone" for high-value items.
+              </Text>
             </Text>
           </View>
         </View>
@@ -94,6 +161,72 @@ const AddProduct = () => {
         <TouchableOpacity style={styles.postButton}>
           <Text style={styles.postButtonText}>Post Listing</Text>
         </TouchableOpacity>
+        <Modal
+          transparent
+          visible={visible}
+          animationType="slide"
+          onRequestClose={() => setVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.mainModalView}>
+              {/* Header */}
+              <View style={styles.header}>
+                <Text style={styles.title}>Choose option</Text>
+                <TouchableOpacity
+                  onPress={() => setVisible(false)}
+                  style={styles.closeBtn}
+                >
+                  <CircleX
+                    size={14}
+                    color={COLORS.TEXT_MUTED}
+                    strokeWidth={1.5}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              <View style={styles.divider} />
+
+              {/* Options */}
+              <View style={styles.optionList}>
+                <TouchableOpacity
+                  style={styles.optionBtn}
+                  activeOpacity={0.7}
+                  onPress={openCamera}
+                >
+                  <View style={styles.iconBox}>
+                    <Camera
+                      size={18}
+                      color={COLORS.TEXT_PRIMARY}
+                      strokeWidth={1.5}
+                    />
+                  </View>
+                  <View style={styles.optionText}>
+                    <Text style={styles.optionLabel}>Take photo</Text>
+                    <Text style={styles.optionSub}>Use your camera</Text>
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.optionBtn}
+                  activeOpacity={0.7}
+                  onPress={openPhotos}
+                >
+                  <View style={styles.iconBox}>
+                    <Image
+                      size={18}
+                      color={COLORS.TEXT_PRIMARY}
+                      strokeWidth={1.5}
+                    />
+                  </View>
+                  <View style={styles.optionText}>
+                    <Text style={styles.optionLabel}>Choose from gallery</Text>
+                    <Text style={styles.optionSub}>Browse your photos</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </ScrollView>
     </SafeAreaView>
   );
@@ -104,7 +237,7 @@ export default AddProduct;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.BACKGROUND_LIGHT, 
+    backgroundColor: COLORS.BACKGROUND_LIGHT,
   },
   scrollContent: {
     paddingHorizontal: SPACING.lg,
@@ -124,7 +257,7 @@ const styles = StyleSheet.create({
   discoverText: {
     fontFamily: FONTS.EXTRABOLD,
     fontSize: FONT_SIZES.xl,
-    color: COLORS.PRIMARY_DARK1, 
+    color: COLORS.PRIMARY_DARK1,
   },
   section: {
     marginBottom: SPACING.xl,
@@ -148,6 +281,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     padding: SPACING.lg,
+    width: SCREEN.width * 0.92,
+  },
+  ImageStyle: {
+    height: 180,
+    borderWidth: 1.5,
+    borderColor: COLORS.PRIMARY_LIGHT,
+    borderRadius: RADIUS.md,
+    width: SCREEN.width * 0.92,
   },
   iconCircle: {
     width: 50,
@@ -264,7 +405,7 @@ const styles = StyleSheet.create({
     opacity: 0.8,
   },
   postButton: {
-    backgroundColor: COLORS.PRIMARY_DARK1, 
+    backgroundColor: COLORS.PRIMARY_DARK1,
     height: 56,
     borderRadius: RADIUS.round,
     flexDirection: 'row',
@@ -280,5 +421,83 @@ const styles = StyleSheet.create({
   },
   sendIcon: {
     transform: [{ rotate: '-15deg' }],
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.45)',
+    justifyContent: 'flex-end',
+  },
+  mainModalView: {
+    width: '100%',
+    backgroundColor: '#fff',
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingBottom: 32,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 24,
+    paddingTop: 20,
+    paddingBottom: 16,
+  },
+  title: {
+    fontSize: 17,
+    fontFamily: FONTS.MEDIUM,
+    letterSpacing: -0.3,
+    color: COLORS.TEXT_PRIMARY,
+  },
+  closeBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    borderWidth: 0.5,
+    borderColor: '#E5E2DC',
+    backgroundColor: '#F5F3EF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  divider: {
+    height: 0.5,
+    backgroundColor: '#EDEAE4',
+    marginHorizontal: 24,
+  },
+  optionList: {
+    paddingHorizontal: 12,
+    paddingTop: 8,
+  },
+  optionBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+    paddingVertical: 14,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+  },
+  iconBox: {
+    width: 42,
+    height: 42,
+    borderRadius: 12,
+    borderWidth: 0.5,
+    borderColor: '#E5E2DC',
+    backgroundColor: '#F5F3EF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  optionText: {
+    flex: 1,
+  },
+  optionLabel: {
+    fontSize: 15,
+    fontFamily: FONTS.MEDIUM,
+    color: COLORS.TEXT_PRIMARY,
+    letterSpacing: -0.1,
+  },
+  optionSub: {
+    fontSize: 13,
+    fontFamily: FONTS.REGULAR,
+    color: COLORS.TEXT_MUTED,
+    marginTop: 2,
   },
 });

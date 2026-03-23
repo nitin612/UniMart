@@ -8,6 +8,8 @@ import {
   ScrollView,
   Modal,
   Image,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import {
   Camera,
@@ -27,6 +29,8 @@ import {
 } from '../../Constants/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import API from '../../api/Api';
 
 const CATEGORIES = [
   'Electronics',
@@ -42,6 +46,10 @@ const AddProduct = () => {
   const [visible, setVisible] = useState(false);
   const [categoryModalVisible, setCategoryModalVisible] = useState(false);
   const [category, setCategory] = useState('');
+  const [title, setTitle] = useState('');
+  const [price, setPrice] = useState(null);
+  const [description, setDescription] = useState('');
+  const [isLoading, setLoading] = useState(false);
 
   const openCamera = async () => {
     setVisible(false);
@@ -61,10 +69,44 @@ const AddProduct = () => {
     const result = await launchImageLibrary({
       mediaType: 'photo',
       quality: 0.9,
-      selectionLimit: 4,
+      // selectionLimit: 4,
     });
     if (!result.didCancel && result.assets?.length > 0) {
-      setImage(result.assets[0].uri);
+      setImage(result.assets[0]);
+    }
+  };
+
+  const postListing = async () => {
+    if (!title || !price || !category || !description) {
+      Alert.alert('All Fields Are Required');
+    }
+    setLoading(true);
+    try {
+      const formData = new FormData();
+
+      formData.append('title', title);
+      formData.append('price', Number(price));
+      formData.append('category', category);
+      formData.append('description', description);
+
+      formData.append('image', {
+        uri: image.uri,
+        name: image.fileName || 'photo.jpg',
+        type: image.type || 'image/jpeg',
+      });
+
+      const response = await API.post('/api/items', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+      if (response.status == 200 || response.status == 201) {
+        Alert.alert('Item Uploaded Succesfully');
+      }
+    } catch (err) {
+      console.error('error uploading item', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -89,7 +131,7 @@ const AddProduct = () => {
                 style={styles.mainPhotoPlaceholder}
                 onPress={() => setVisible(true)}
               >
-                <Image source={{ uri: image }} style={styles.ImageStyle} />
+                <Image source={{ uri: image.uri }} style={styles.ImageStyle} />
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
@@ -110,7 +152,7 @@ const AddProduct = () => {
               </TouchableOpacity>
             )}
 
-            <View style={styles.smallPhotoRow}>
+            {/* <View style={styles.smallPhotoRow}>
               {[1, 2, 3].map(item => (
                 <TouchableOpacity
                   key={item}
@@ -120,7 +162,7 @@ const AddProduct = () => {
                   <Plus size={24} color={COLORS.TEXT_MUTED} />
                 </TouchableOpacity>
               ))}
-            </View>
+            </View> */}
           </View>
         </View>
 
@@ -131,12 +173,18 @@ const AddProduct = () => {
             style={styles.input}
             placeholder="e.g. Organic Chemistry Textbook (12th Ed)"
             placeholderTextColor={COLORS.TEXT_MUTED}
+            value={title}
+            onChangeText={setTitle}
           />
 
           <Text style={styles.label}>Price</Text>
-          <View style={styles.priceInputContainer}>
-            <Text style={styles.currencySymbol}>0.00</Text>
-          </View>
+          <TextInput
+            style={styles.input}
+            placeholder="0.0"
+            placeholderTextColor={COLORS.TEXT_MUTED}
+            value={price}
+            onChangeText={setPrice}
+          />
 
           <Text style={styles.label}>Category</Text>
           <TouchableOpacity
@@ -162,6 +210,8 @@ const AddProduct = () => {
             multiline
             numberOfLines={4}
             textAlignVertical="top"
+            value={description}
+            onChangeText={setDescription}
           />
         </View>
 
@@ -180,8 +230,12 @@ const AddProduct = () => {
         </View>
 
         {/* Post Listing Button */}
-        <TouchableOpacity style={styles.postButton}>
-          <Text style={styles.postButtonText}>Post Listing</Text>
+        <TouchableOpacity style={styles.postButton} onPress={postListing}>
+          {isLoading ? (
+            <ActivityIndicator size={'small'} color={'#fff'} />
+          ) : (
+            <Text style={styles.postButtonText}>Post Listing</Text>
+          )}
         </TouchableOpacity>
         <Modal
           transparent
@@ -254,7 +308,7 @@ const AddProduct = () => {
         <Modal
           transparent
           visible={categoryModalVisible}
-          animationType="slide"
+          animationType="fade"
           onRequestClose={() => setCategoryModalVisible(false)}
         >
           <View style={styles.modalOverlay}>

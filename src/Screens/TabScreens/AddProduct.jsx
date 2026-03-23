@@ -28,9 +28,20 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
+const CATEGORIES = [
+  'Electronics',
+  'Books',
+  'Clothing',
+  'Furniture',
+  'Sports',
+  'Other',
+];
+
 const AddProduct = () => {
   const [image, setImage] = useState(null);
   const [visible, setVisible] = useState(false);
+  const [categoryModalVisible, setCategoryModalVisible] = useState(false);
+  const [category, setCategory] = useState('');
 
   const openCamera = async () => {
     setVisible(false);
@@ -104,6 +115,7 @@ const AddProduct = () => {
                 <TouchableOpacity
                   key={item}
                   style={styles.smallPhotoPlaceholder}
+                  onPress={() => setVisible(true)}
                 >
                   <Plus size={24} color={COLORS.TEXT_MUTED} />
                 </TouchableOpacity>
@@ -127,8 +139,18 @@ const AddProduct = () => {
           </View>
 
           <Text style={styles.label}>Category</Text>
-          <TouchableOpacity style={styles.categoryPicker}>
-            <Text style={styles.categoryText}>Select Category</Text>
+          <TouchableOpacity
+            style={styles.categoryPicker}
+            onPress={() => setCategoryModalVisible(true)}
+          >
+            <Text
+              style={[
+                styles.categoryText,
+                category && { color: COLORS.TEXT_PRIMARY },
+              ]}
+            >
+              {category || 'Select Category'}
+            </Text>
             <ChevronDown size={20} color={COLORS.TEXT_MUTED} />
           </TouchableOpacity>
 
@@ -224,6 +246,51 @@ const AddProduct = () => {
                   </View>
                 </TouchableOpacity>
               </View>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Category Modal */}
+        <Modal
+          transparent
+          visible={categoryModalVisible}
+          animationType="slide"
+          onRequestClose={() => setCategoryModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.mainModalView}>
+              <View style={styles.header}>
+                <Text style={styles.title}>Select Category</Text>
+                <TouchableOpacity
+                  onPress={() => setCategoryModalVisible(false)}
+                  style={styles.closeBtn}
+                >
+                  <CircleX
+                    size={14}
+                    color={COLORS.TEXT_MUTED}
+                    strokeWidth={1.5}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.divider} />
+              <ScrollView
+                style={styles.optionList}
+                showsVerticalScrollIndicator={false}
+              >
+                {CATEGORIES.map((cat, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={[styles.optionBtn, { paddingVertical: 16 }]}
+                    activeOpacity={0.7}
+                    onPress={() => {
+                      setCategory(cat);
+                      setCategoryModalVisible(false);
+                    }}
+                  >
+                    <Text style={styles.optionLabel}>{cat}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
             </View>
           </View>
         </Modal>

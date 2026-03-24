@@ -41,11 +41,15 @@ const CATEGORIES = [
   'Other',
 ];
 
+const CONDITION = ['Excellent', 'Good', 'Average', 'Below Average'];
+
 const AddProduct = () => {
   const [image, setImage] = useState(null);
   const [visible, setVisible] = useState(false);
   const [categoryModalVisible, setCategoryModalVisible] = useState(false);
+  const [conditionModalVisible, setConditionModalVisible] = useState(false);
   const [category, setCategory] = useState('');
+  const [condition, setCondition] = useState('');
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState(null);
   const [description, setDescription] = useState('');
@@ -87,6 +91,7 @@ const AddProduct = () => {
       formData.append('title', title);
       formData.append('price', Number(price));
       formData.append('category', category);
+      formData.append('condition', condition);
       formData.append('description', description);
 
       formData.append('image', {
@@ -100,8 +105,15 @@ const AddProduct = () => {
           'Content-Type': 'multipart/form-data',
         },
       });
+      console.log('response', response);
       if (response.status == 200 || response.status == 201) {
         Alert.alert('Item Uploaded Succesfully');
+        setCategory('');
+        setTitle('');
+        setDescription('');
+        setPrice('');
+        setCondition('');
+        setImage('');
       }
     } catch (err) {
       console.error('error uploading item', err);
@@ -198,6 +210,22 @@ const AddProduct = () => {
               ]}
             >
               {category || 'Select Category'}
+            </Text>
+            <ChevronDown size={20} color={COLORS.TEXT_MUTED} />
+          </TouchableOpacity>
+
+          <Text style={styles.label}>Condition</Text>
+          <TouchableOpacity
+            style={styles.categoryPicker}
+            onPress={() => setConditionModalVisible(true)}
+          >
+            <Text
+              style={[
+                styles.categoryText,
+                category && { color: COLORS.TEXT_PRIMARY },
+              ]}
+            >
+              {condition || 'Select Category'}
             </Text>
             <ChevronDown size={20} color={COLORS.TEXT_MUTED} />
           </TouchableOpacity>
@@ -342,6 +370,51 @@ const AddProduct = () => {
                     }}
                   >
                     <Text style={styles.optionLabel}>{cat}</Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Condition Modal */}
+        <Modal
+          transparent
+          visible={conditionModalVisible}
+          animationType="fade"
+          onRequestClose={() => setConditionModalVisible(false)}
+        >
+          <View style={styles.modalOverlay}>
+            <View style={styles.mainModalView}>
+              <View style={styles.header}>
+                <Text style={styles.title}>Select Condition</Text>
+                <TouchableOpacity
+                  onPress={() => setConditionModalVisible(false)}
+                  style={styles.closeBtn}
+                >
+                  <CircleX
+                    size={14}
+                    color={COLORS.TEXT_MUTED}
+                    strokeWidth={1.5}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.divider} />
+              <ScrollView
+                style={styles.optionList}
+                showsVerticalScrollIndicator={false}
+              >
+                {CONDITION.map((condition, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={[styles.optionBtn, { paddingVertical: 16 }]}
+                    activeOpacity={0.7}
+                    onPress={() => {
+                      setCondition(condition);
+                      setConditionModalVisible(false);
+                    }}
+                  >
+                    <Text style={styles.optionLabel}>{condition}</Text>
                   </TouchableOpacity>
                 ))}
               </ScrollView>

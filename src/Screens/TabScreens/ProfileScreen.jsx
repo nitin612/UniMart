@@ -6,7 +6,7 @@ import {
   Image,
   ScrollView,
 } from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   COLORS,
@@ -30,6 +30,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 import { logOut as logOutAction } from '../../redux/slices/authSlice';
+import API from '../../api/Api';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
@@ -38,6 +39,17 @@ const ProfileScreen = () => {
   const handleLogOut = async () => {
     await AsyncStorage.clear();
     dispatch(logOutAction());
+  };
+
+  useEffect(() => {
+    getUserData();
+  }, []);
+
+  const getUserData = async () => {
+    const response = await API.get('/api/auth/profile',
+    );
+    console.log('response', response);
+    return response;
   };
 
   return (

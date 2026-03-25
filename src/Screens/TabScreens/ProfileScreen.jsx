@@ -5,6 +5,7 @@ import {
   View,
   Image,
   ScrollView,
+  ActivityIndicator,
 } from 'react-native';
 import React, { useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -30,26 +31,25 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { useDispatch } from 'react-redux';
 import { logOut as logOutAction } from '../../redux/slices/authSlice';
-import API from '../../api/Api';
+import { useSelector } from 'react-redux';
 
 const ProfileScreen = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const { data, loading, error } = useSelector(state => state.profile);
+
+  const listings = data?.listings?.length;
+
+  if (loading)
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color="#fff" />
+      </View>
+    );
 
   const handleLogOut = async () => {
     await AsyncStorage.clear();
     dispatch(logOutAction());
-  };
-
-  useEffect(() => {
-    getUserData();
-  }, []);
-
-  const getUserData = async () => {
-    const response = await API.get('/api/auth/profile',
-    );
-    console.log('response', response);
-    return response;
   };
 
   return (
@@ -65,14 +65,14 @@ const ProfileScreen = () => {
             />
           </View>
           <View style={styles.textContainer}>
-            <Text style={styles.nameStyle}>Scarlet Johnson</Text>
+            <Text style={styles.nameStyle}>{data?.name}</Text>
             <Text style={styles.imageDescription}>
               Computer Science | Stanford University
             </Text>
           </View>
           <View style={styles.basicInfoContainer}>
             <View style={styles.bacicInfo}>
-              <Text style={styles.textValue}>12</Text>
+              <Text style={styles.textValue}>{listings}</Text>
               <Text style={styles.textValueName}>LISTINGS</Text>
             </View>
             <View
@@ -83,7 +83,7 @@ const ProfileScreen = () => {
               }}
             />
             <View style={styles.bacicInfo}>
-              <Text style={styles.textValue}>4.9</Text>
+              <Text style={styles.textValue}>{data?.ratingScore}</Text>
               <Text style={styles.textValueName}>RATING</Text>
             </View>
             <View
@@ -94,7 +94,7 @@ const ProfileScreen = () => {
               }}
             />
             <View style={styles.bacicInfo}>
-              <Text style={styles.textValue}>28</Text>
+              <Text style={styles.textValue}>{(data?.itemsSoldCount)}</Text>
               <Text style={styles.textValueName}>SOLD</Text>
             </View>
           </View>

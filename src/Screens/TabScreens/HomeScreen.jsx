@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -18,6 +18,8 @@ import FilterChips from '../../Components/HomeScreenComponents/FilterChips';
 import ProductCard from '../../Components/HomeScreenComponents/ProductCard';
 import { Bell } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { fetchUserProfile } from '../../redux/slices/userProfileSlice';
+import { useDispatch } from 'react-redux';
 
 const DUMMY_PRODUCTS = [
   {
@@ -85,6 +87,11 @@ const DUMMY_PRODUCTS = [
 const HomeScreen = () => {
   const [search, setSearch] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('All');
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(fetchUserProfile());
+  }, []);
 
   const renderHeader = () => (
     <View style={styles.headerContainer}>

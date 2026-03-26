@@ -1,0 +1,28 @@
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import API from '../../api/Api';
+
+export const fetchUserProfile = createAsyncThunk(
+  'fetch/fetchUser',
+  async (_, thunkAPI) => {
+    try {
+      const response = await API.get('/api/auth/profile');
+      console.log('userProfileData====>', response.data);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  },
+);
+
+export const fetchItems = createAsyncThunk(
+  'items/fetchItems',
+  async (_, thunkAPI) => {
+    try {
+      const response = await API.get('/api/items');
+      console.log('Items====>', response.data);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  },
+);

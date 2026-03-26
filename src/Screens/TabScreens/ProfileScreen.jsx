@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import React, { useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import LottieView from 'lottie-react-native';
 import {
   COLORS,
   FONT_SIZES,
@@ -43,7 +44,12 @@ const ProfileScreen = () => {
   if (loading)
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color="#fff" />
+        <LottieView
+          source={require('../../assets/animations/loader.json')}
+          autoPlay
+          loop
+          style={{ width: 100, height: 100 }}
+        />
       </View>
     );
 
@@ -67,7 +73,7 @@ const ProfileScreen = () => {
           <View style={styles.textContainer}>
             <Text style={styles.nameStyle}>{data?.name}</Text>
             <Text style={styles.imageDescription}>
-              Computer Science | Stanford University
+              {data?.major} | {data?.department}
             </Text>
           </View>
           <View style={styles.basicInfoContainer}>
@@ -94,7 +100,7 @@ const ProfileScreen = () => {
               }}
             />
             <View style={styles.bacicInfo}>
-              <Text style={styles.textValue}>{(data?.itemsSoldCount)}</Text>
+              <Text style={styles.textValue}>{data?.itemsSoldCount}</Text>
               <Text style={styles.textValueName}>SOLD</Text>
             </View>
           </View>
@@ -120,7 +126,7 @@ const ProfileScreen = () => {
           <ProfileOptionsListing
             backgroundColor={COLORS.GREEN_T}
             logo={BadgeIndianRupee}
-            name={'Transactions'}
+            name={'Sold Items'}
             icon={ChevronRight}
             iconColor={COLORS.green}
           />

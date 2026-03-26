@@ -26,7 +26,7 @@ export default function ProductCard({ item }) {
     <TouchableOpacity style={styles.card}>
       <View style={styles.imageContainer}>
         <Image
-          source={{ uri: item.image }}
+          source={{ uri: item.imageUrl }}
           style={styles.image}
           resizeMode="cover"
         />

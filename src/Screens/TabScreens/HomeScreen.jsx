@@ -18,78 +18,23 @@ import FilterChips from '../../Components/HomeScreenComponents/FilterChips';
 import ProductCard from '../../Components/HomeScreenComponents/ProductCard';
 import { Bell } from 'lucide-react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { fetchUserProfile } from '../../redux/slices/userProfileSlice';
-import { useDispatch } from 'react-redux';
-
-const DUMMY_PRODUCTS = [
-  {
-    id: '1',
-    title: 'Advanced Engineering Math',
-    price: 45.0,
-    category: 'TEXTBOOK',
-    image:
-      'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&q=80&w=800',
-    isFavorite: false,
-    type: 'buyable',
-    sellerName: 'Alex',
-    sellerAvatar:
-      'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=150',
-    timeAgo: '2h ago',
-    condition: 'Used - Good',
-  },
-  {
-    id: '2',
-    title: 'iPad Pro M2 2022',
-    price: 1600.0,
-    category: 'ELECTRONICS',
-    image:
-      'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?auto=format&fit=crop&q=80&w=800',
-    isFavorite: true,
-    type: 'message',
-    sellerName: 'Sam',
-    sellerAvatar:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=150',
-    timeAgo: '5h ago',
-    condition: 'Like New',
-  },
-  {
-    id: '3',
-    title: 'Mini Fridge Black',
-    price: 1500.0,
-    category: 'DORM',
-    image:
-      'https://images.unsplash.com/photo-1584286595398-a59f21d313f5?auto=format&fit=crop&q=80&w=800',
-    isFavorite: false,
-    type: 'message',
-    sellerName: 'Jordan',
-    sellerAvatar:
-      'https://images.unsplash.com/photo-1599566150163-29194dcaad36?auto=format&fit=crop&q=80&w=150',
-    timeAgo: '1d ago',
-    condition: 'Used',
-  },
-  {
-    id: '4',
-    title: 'Sony WH-1000XM4',
-    price: 8000.0,
-    category: 'ELECTRONICS',
-    image:
-      'https://images.unsplash.com/photo-1618366712010-f4ae9c647dcb?auto=format&fit=crop&q=80&w=800',
-    isFavorite: false,
-    type: 'buyable',
-    sellerName: 'Chris',
-    sellerAvatar:
-      'https://images.unsplash.com/photo-1527980965255-d3b416303d12?auto=format&fit=crop&q=80&w=150',
-    timeAgo: '3h ago',
-    condition: 'Excellent',
-  },
-];
+import {
+  fetchUserProfile,
+  fetchItems,
+} from '../../redux/thunkFunctions/thunkFunctions';
+import { useDispatch, useSelector } from 'react-redux';
+import LottieView from 'lottie-react-native';
 
 const HomeScreen = () => {
   const [search, setSearch] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('All');
   const dispatch = useDispatch();
+  const { data, loading, error } = useSelector(state => state.items);
+
+  const dataSaab = data?.items;
 
   useEffect(() => {
+    dispatch(fetchItems());
     dispatch(fetchUserProfile());
   }, []);
 
@@ -122,14 +67,28 @@ const HomeScreen = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <FlatList
-        data={DUMMY_PRODUCTS}
-        keyExtractor={item => item.id}
+        data={dataSaab}
+        keyExtractor={item => item._id}
         renderItem={({ item }) => <ProductCard item={item} />}
         numColumns={2}
         columnWrapperStyle={styles.row}
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={renderHeader}
         contentContainerStyle={styles.listContent}
+        ListEmptyComponent={
+          loading ? (
+            <View style={styles.loaderContainer}>
+              <LottieView
+                source={require('../../assets/animations/loader.json')}
+                autoPlay
+                loop
+                style={{ width: 150, height: 150 }}
+              />
+            </View>
+          ) : (
+            <Text style={styles.emptyText}>No items found</Text>
+          )
+        }
       />
     </SafeAreaView>
   );
@@ -199,5 +158,18 @@ const styles = StyleSheet.create({
   },
   row: {
     justifyContent: 'space-between',
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 130,
+  },
+
+  emptyText: {
+    textAlign: 'center',
+    marginTop: 50,
+    color: COLORS.TEXT_SECONDARY,
+    fontFamily: FONTS.MEDIUM,
   },
 });

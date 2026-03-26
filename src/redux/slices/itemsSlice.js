@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchUserProfile } from '../thunkFunctions/thunkFunctions';
+import { fetchItems } from '../thunkFunctions/thunkFunctions';
 
 const initialState = {
   date: [],
@@ -7,24 +7,24 @@ const initialState = {
   error: null,
 };
 
-export const profileSlice = createSlice({
-  name: 'profile',
+export const itemSlice = createSlice({
+  name: 'items',
   initialState,
   reducers: {},
   extraReducers: builder => {
     builder
-      .addCase(fetchUserProfile.pending, state => {
+      .addCase(fetchItems.pending, state => {
         state.loading = true;
       })
-      .addCase(fetchUserProfile.fulfilled, (state, action) => {
+      .addCase(fetchItems.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload;
       })
-      .addCase(fetchUserProfile.rejected, (state, action) => {
+      .addCase(fetchItems.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
   },
 });
 
-export default profileSlice.reducer;
+export default itemSlice.reducer;

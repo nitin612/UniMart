@@ -23,7 +23,7 @@ import {
   fetchItems,
 } from '../../redux/thunkFunctions/thunkFunctions';
 import { useDispatch, useSelector } from 'react-redux';
-import LottieView from 'lottie-react-native';
+import CustomLoader from '../../common/CustomLoader';
 
 const HomeScreen = () => {
   const [search, setSearch] = useState('');
@@ -78,12 +78,7 @@ const HomeScreen = () => {
         ListEmptyComponent={
           loading ? (
             <View style={styles.loaderContainer}>
-              <LottieView
-                source={require('../../assets/animations/loader.json')}
-                autoPlay
-                loop
-                style={{ width: 150, height: 150 }}
-              />
+              <CustomLoader />
             </View>
           ) : (
             <Text style={styles.emptyText}>No items found</Text>

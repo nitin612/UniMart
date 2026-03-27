@@ -31,6 +31,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API from '../../api/Api';
+import CustomLoader from '../../common/CustomLoader';
 
 const CATEGORIES = [
   'Electronics',
@@ -44,7 +45,7 @@ const CATEGORIES = [
 const CONDITION = ['Excellent', 'Good', 'Average', 'Below Average'];
 
 const AddProduct = () => {
-  const [image, setImage] = useState(null);
+  const [images, setImages] = useState([]);
   const [visible, setVisible] = useState(false);
   const [categoryModalVisible, setCategoryModalVisible] = useState(false);
   const [conditionModalVisible, setConditionModalVisible] = useState(false);
@@ -58,31 +59,49 @@ const AddProduct = () => {
   const openCamera = async () => {
     setVisible(false);
     await new Promise(resolve => setTimeout(resolve, 300));
+    if (images.length >= 4) {
+      Alert.alert('Limit Reached', 'You can add up to 4 images.');
+      return;
+    }
     const result = await launchCamera({
       mediaType: 'photo',
       quality: 0.9,
     });
     if (!result.didCancel && result.assets?.length > 0) {
-      setImage(result.assets[0]);
+      setImages(prev => [...prev, Array.from(result.assets)[0]].slice(0, 4));
     }
   };
 
   const openPhotos = async () => {
     setVisible(false);
     await new Promise(resolve => setTimeout(resolve, 300));
+    const remaining = 4 - images.length;
+    if (remaining <= 0) {
+      Alert.alert('Limit Reached', 'You can add up to 4 images.');
+      return;
+    }
     const result = await launchImageLibrary({
       mediaType: 'photo',
       quality: 0.9,
-      // selectionLimit: 4,
+      selectionLimit: remaining,
     });
     if (!result.didCancel && result.assets?.length > 0) {
-      setImage(result.assets[0]);
+      setImages(prev => [...prev, ...Array.from(result.assets)].slice(0, 4));
     }
+  };
+
+  const removeImage = index => {
+    setImages(prev => prev.filter((_, i) => i !== index));
   };
 
   const postListing = async () => {
     if (!title || !price || !category || !description) {
       Alert.alert('All Fields Are Required');
+      return;
+    }
+    if (images.length === 0) {
+      Alert.alert('Image Required', 'Please add at least one photo.');
+      return;
     }
     setLoading(true);
     try {
@@ -94,10 +113,12 @@ const AddProduct = () => {
       formData.append('condition', condition);
       formData.append('description', description);
 
-      formData.append('image', {
-        uri: image.uri,
-        name: image.fileName || 'photo.jpg',
-        type: image.type || 'image/jpeg',
+      images.forEach(img => {
+        formData.append('images', {
+          uri: img.uri,
+          name: img.fileName || 'photo.jpg',
+          type: img.type || 'image/jpeg',
+        });
       });
 
       const response = await API.post('/api/items', formData, {
@@ -107,13 +128,13 @@ const AddProduct = () => {
       });
       console.log('response', response);
       if (response.status == 200 || response.status == 201) {
-        Alert.alert('Item Uploaded Succesfully');
+        Alert.alert('Item Uploaded Successfully');
         setCategory('');
         setTitle('');
         setDescription('');
         setPrice('');
         setCondition('');
-        setImage('');
+        setImages([]);
       }
     } catch (err) {
       console.error('error uploading item', err);
@@ -136,15 +157,24 @@ const AddProduct = () => {
 
         {/* Photos Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Photos (up to 4)</Text>
+          <Text style={styles.sectionTitle}>
+            Photos ({images.length}/4)
+          </Text>
           <View style={styles.photoContainer}>
-            {image ? (
-              <TouchableOpacity
-                style={styles.mainPhotoPlaceholder}
-                onPress={() => setVisible(true)}
-              >
-                <Image source={{ uri: image.uri }} style={styles.ImageStyle} />
-              </TouchableOpacity>
+            {/* Main / first photo slot */}
+            {images[0] ? (
+              <View style={styles.mainPhotoWrapper}>
+                <Image
+                  source={{ uri: images[0].uri }}
+                  style={styles.ImageStyle}
+                />
+                <TouchableOpacity
+                  style={styles.removeBtn}
+                  onPress={() => removeImage(0)}
+                >
+                  <CircleX size={20} color="#fff" strokeWidth={2} />
+                </TouchableOpacity>
+              </View>
             ) : (
               <TouchableOpacity
                 style={styles.mainPhotoPlaceholder}
@@ -164,17 +194,33 @@ const AddProduct = () => {
               </TouchableOpacity>
             )}
 
-            {/* <View style={styles.smallPhotoRow}>
-              {[1, 2, 3].map(item => (
-                <TouchableOpacity
-                  key={item}
-                  style={styles.smallPhotoPlaceholder}
-                  onPress={() => setVisible(true)}
-                >
-                  <Plus size={24} color={COLORS.TEXT_MUTED} />
-                </TouchableOpacity>
+            {/* Small photo slots 2-4 */}
+            <View style={styles.smallPhotoRow}>
+              {[1, 2, 3].map(index => (
+                images[index] ? (
+                  <View key={index} style={styles.smallPhotoWrapper}>
+                    <Image
+                      source={{ uri: images[index].uri }}
+                      style={styles.smallThumbnail}
+                    />
+                    <TouchableOpacity
+                      style={styles.removeSmallBtn}
+                      onPress={() => removeImage(index)}
+                    >
+                      <CircleX size={16} color="#fff" strokeWidth={2} />
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.smallPhotoPlaceholder}
+                    onPress={() => setVisible(true)}
+                  >
+                    <Plus size={24} color={COLORS.TEXT_MUTED} />
+                  </TouchableOpacity>
+                )
               ))}
-            </View> */}
+            </View>
           </View>
         </View>
 
@@ -259,11 +305,7 @@ const AddProduct = () => {
 
         {/* Post Listing Button */}
         <TouchableOpacity style={styles.postButton} onPress={postListing}>
-          {isLoading ? (
-            <ActivityIndicator size={'small'} color={'#fff'} />
-          ) : (
-            <Text style={styles.postButtonText}>Post Listing</Text>
-          )}
+          <Text style={styles.postButtonText}>Post Listing</Text>
         </TouchableOpacity>
         <Modal
           transparent
@@ -422,6 +464,11 @@ const AddProduct = () => {
           </View>
         </Modal>
       </ScrollView>
+      {isLoading ? (
+        <View style={styles.overLay}>
+          <CustomLoader />
+        </View>
+      ) : null}
     </SafeAreaView>
   );
 };
@@ -477,12 +524,25 @@ const styles = StyleSheet.create({
     padding: SPACING.lg,
     width: SCREEN.width * 0.92,
   },
+  mainPhotoWrapper: {
+    position: 'relative',
+    width: SCREEN.width * 0.92,
+    height: 180,
+  },
   ImageStyle: {
     height: 180,
     borderWidth: 1.5,
     borderColor: COLORS.PRIMARY_LIGHT,
     borderRadius: RADIUS.md,
     width: SCREEN.width * 0.92,
+  },
+  removeBtn: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    backgroundColor: 'rgba(0,0,0,0.55)',
+    borderRadius: 12,
+    padding: 2,
   },
   iconCircle: {
     width: 50,
@@ -520,6 +580,26 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.BACKGROUND,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  smallPhotoWrapper: {
+    flex: 1,
+    height: 100,
+    position: 'relative',
+    borderRadius: RADIUS.md,
+    overflow: 'hidden',
+  },
+  smallThumbnail: {
+    width: '100%',
+    height: '100%',
+    borderRadius: RADIUS.md,
+  },
+  removeSmallBtn: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    backgroundColor: 'rgba(0,0,0,0.55)',
+    borderRadius: 10,
+    padding: 2,
   },
   label: {
     fontSize: FONT_SIZES.sm,
@@ -693,5 +773,15 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.REGULAR,
     color: COLORS.TEXT_MUTED,
     marginTop: 2,
+  },
+  overLay: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.2)',
   },
 });

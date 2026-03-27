@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import React, { useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import LottieView from 'lottie-react-native';
+import CustomLoader from '../../common/CustomLoader';
 import {
   COLORS,
   FONT_SIZES,
@@ -44,12 +44,7 @@ const ProfileScreen = () => {
   if (loading)
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <LottieView
-          source={require('../../assets/animations/loader.json')}
-          autoPlay
-          loop
-          style={{ width: 100, height: 100 }}
-        />
+        <CustomLoader />
       </View>
     );
 

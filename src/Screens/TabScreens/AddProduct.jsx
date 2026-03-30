@@ -94,6 +94,10 @@ const AddProduct = () => {
     setImages(prev => prev.filter((_, i) => i !== index));
   };
 
+
+
+  // gffhvjbjnmefwds
+
   const postListing = async () => {
     if (!title || !price || !category || !description) {
       Alert.alert('All Fields Are Required');

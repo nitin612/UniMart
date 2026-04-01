@@ -67,12 +67,12 @@ const ProductDetailScreen = ({ item }) => {
         </View>
       </ScrollView>
       <View style={styles.wrapper}>
-        <TouchableOpacity style={styles.messgae}>
+        <TouchableOpacity style={styles.messageBtn}>
           <Text style={styles.messageText}>Message to a Seller</Text>
         </TouchableOpacity>
-        <View style={styles.price}>
+        <View style={styles.priceContainer}>
           <Text style={styles.priceText}>Price</Text>
-          <Text style={styles.actualPriceText}>30.0</Text>
+          <Text style={styles.actualPriceText}>$30.00</Text>
         </View>
       </View>
     </SafeAreaView>
@@ -137,35 +137,42 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     position: 'absolute',
-    bottom: 20,
+    bottom: 24,
     flexDirection: 'row',
     backgroundColor: COLORS.PRIMARY_DARK1,
     width: SCREEN.width * 0.9,
-    height: SCREEN.width * 0.14,
-    borderRadius: 30,
+    height: 64,
+    borderRadius: 32,
     alignSelf: 'center',
-    shadowColor: '#000',
+    shadowColor: COLORS.PRIMARY_DARK1,
     shadowOffset: {
       width: 0,
-      height: 5,
+      height: 6,
     },
-    shadowOpacity: 0.34,
-    shadowRadius: 6.27,
-    elevation: 10,
+    shadowOpacity: 0.35,
+    shadowRadius: 8,
+    elevation: 8,
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingleft: 20,
+    paddingLeft: 24,
+    paddingRight: 6,
   },
-  messgae: {
-    paddingLeft: 40,
+  messageBtn: {
+    flex: 1,
+    justifyContent: 'center',
   },
-  price: {
+  priceContainer: {
     alignItems: 'center',
     justifyContent: 'center',
-    height: SCREEN.width * 0.14,
-    borderRadius: 30,
-    paddingHorizontal: 60,
+    height: 52,
+    borderRadius: 26,
+    paddingHorizontal: 50,
     backgroundColor: COLORS.BACKGROUND_LIGHT,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
   },
   messageText: {
     color: COLORS.TEXT_COLOR,
@@ -173,11 +180,14 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZES.md,
   },
   priceText: {
-    fontFamily: FONTS.SEMIBOLD,
-    fontSize: FONT_SIZES.sm,
+    fontFamily: FONTS.MEDIUM,
+    fontSize: FONT_SIZES.xs + 1,
+    color: COLORS.TEXT_MUTED,
+    marginBottom: -2,
   },
   actualPriceText: {
+    color: COLORS.PRIMARY_DARK1,
     fontFamily: FONTS.BOLD,
-    fontSize: FONT_SIZES.md,
+    fontSize: FONT_SIZES.md + 1,
   },
 });

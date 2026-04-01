@@ -19,7 +19,7 @@ const ProfileOptionsListing = ({
   onPress,
 }) => {
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={onPress}>
       <View style={styles.firstView}>
         <View style={[styles.iconView, { backgroundColor: backgroundColor }]}>
           <MainLogo size={24} color={iconColor} />

@@ -110,6 +110,7 @@ const ProfileScreen = () => {
             name={'Edit Profile'}
             icon={ChevronRight}
             iconColor={'darkblue'}
+            onPress={() => navigation.navigate('EditProfileScreen')}
           />
           <ProfileOptionsListing
             backgroundColor={COLORS.ORANGE_T}

@@ -3,6 +3,7 @@ import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BottomTabs from './BottomTabs';
 import ProductDetailScreen from '../Screens/mainScreens/ProductDetailScreen';
+import EditProfileScreen from '../Screens/mainScreens/EditProfileScreen';
 
 const MainStack = () => {
   const Stack = createNativeStackNavigator();
@@ -16,6 +17,13 @@ const MainStack = () => {
       <Stack.Screen
         name="ProductDetailScreen"
         component={ProductDetailScreen}
+      />
+      <Stack.Screen
+        name="EditProfileScreen"
+        component={EditProfileScreen}
+        options={{
+          presentation: 'modal',
+        }}
       />
     </Stack.Navigator>
   );

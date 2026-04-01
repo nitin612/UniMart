@@ -26,7 +26,7 @@ const CartScreen = () => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.headerContainer}>
-        <Text style={styles.headerTitle}>My Cart</Text>
+        <Text style={styles.headerTitle}>My Wishlist</Text>
         <Text style={styles.headerSubtitle}>0 items</Text>
       </View>
 
@@ -42,9 +42,9 @@ const CartScreen = () => {
               strokeWidth={1.5}
             />
           </View>
-          <Text style={styles.emptyTitle}>Cart is Empty</Text>
+          <Text style={styles.emptyTitle}>Wishlist is Empty</Text>
           <Text style={styles.emptySubtitle}>
-            Looks like you haven't added any gear, textbooks, or dorm essentials
+            Looks like you haven't Wishlisted any gear, textbooks, or dorm essentials
             yet.
           </Text>
 

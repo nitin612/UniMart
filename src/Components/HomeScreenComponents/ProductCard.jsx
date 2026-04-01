@@ -16,14 +16,19 @@ import {
   SHADOW,
   FONT_SIZES,
 } from '../../Constants/theme';
+import { useNavigation } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 
 const CARD_WIDTH = (width - SPACING.lg * 2 - SPACING.md) / 2;
 
 export default function ProductCard({ item }) {
+  const navigation = useNavigation();
   return (
-    <TouchableOpacity style={styles.card}>
+    <TouchableOpacity
+      style={styles.card}
+      onPress={() => navigation.navigate('ProductDetailScreen', item)}
+    >
       <View style={styles.imageContainer}>
         <Image
           source={{ uri: item.imageUrls[0] }}

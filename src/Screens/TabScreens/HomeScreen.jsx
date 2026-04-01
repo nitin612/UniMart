@@ -24,8 +24,9 @@ import {
 } from '../../redux/thunkFunctions/thunkFunctions';
 import { useDispatch, useSelector } from 'react-redux';
 import CustomLoader from '../../common/CustomLoader';
+import { useNavigation } from '@react-navigation/native';
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
   const [search, setSearch] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('All');
   const dispatch = useDispatch();
@@ -69,7 +70,7 @@ const HomeScreen = () => {
       <FlatList
         data={dataSaab}
         keyExtractor={item => item._id}
-        renderItem={({ item }) => <ProductCard item={item} />}
+        renderItem={({ item }) => <ProductCard item={item} navigation={item}/>}
         numColumns={2}
         columnWrapperStyle={styles.row}
         showsVerticalScrollIndicator={false}

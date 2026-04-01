@@ -1,12 +1,8 @@
 import { View, Text } from 'react-native';
 import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import HomeScreen from '../Screens/TabScreens/HomeScreen';
-import CartScreen from '../Screens/TabScreens/CartScreen';
-import ChatScreen from '../Screens/TabScreens/ChatScreen';
-import ProfileScreen from '../Screens/TabScreens/ProfileScreen';
-import AddProduct from '../Screens/TabScreens/AddProduct';
 import BottomTabs from './BottomTabs';
+import ProductDetailScreen from '../Screens/mainScreens/ProductDetailScreen';
 
 const MainStack = () => {
   const Stack = createNativeStackNavigator();
@@ -17,6 +13,10 @@ const MainStack = () => {
       }}
     >
       <Stack.Screen name="BottomTabs" component={BottomTabs} />
+      <Stack.Screen
+        name="ProductDetailScreen"
+        component={ProductDetailScreen}
+      />
     </Stack.Navigator>
   );
 };

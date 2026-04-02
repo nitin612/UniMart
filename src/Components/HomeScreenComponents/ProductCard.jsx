@@ -27,7 +27,6 @@ export default function ProductCard({ item }) {
   return (
     <TouchableOpacity
       style={styles.card}
-      onPress={() => navigation.navigate('ProductDetailScreen', item)}
     >
       <View style={styles.imageContainer}>
         <Image

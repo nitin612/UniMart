@@ -70,7 +70,7 @@ const HomeScreen = ({navigation}) => {
       <FlatList
         data={dataSaab}
         keyExtractor={item => item._id}
-        renderItem={({ item }) => <ProductCard item={item} navigation={item}/>}
+        renderItem={({ item }) => <ProductCard item={item}/>}
         numColumns={2}
         columnWrapperStyle={styles.row}
         showsVerticalScrollIndicator={false}

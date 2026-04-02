@@ -13,6 +13,7 @@ import {
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Api from '../../api/Api';
+import SelectionModal from '../../Components/SignUpScreenComponents/SelectionModal';
 
 import {
   FONT_SIZES,
@@ -25,9 +26,88 @@ import {
   SCREEN,
 } from '../../Constants/theme';
 import { useNavigation } from '@react-navigation/native';
-import { ArrowLeft, User, Mail, LockKeyhole } from 'lucide-react-native';
+import {
+  ArrowLeft,
+  User,
+  Mail,
+  LockKeyhole,
+  NotebookTabs,
+  Building2,
+  ChevronDown,
+} from 'lucide-react-native';
 import * as Yup from 'yup';
 import { register } from '../../api/apiRoutes';
+
+const ACADEMIC_DATA = {
+  'Computer Science & IT': [
+    'Computer Science',
+    'Software Engineering',
+    'Information Technology',
+    'Data Science',
+    'Cybersecurity',
+  ],
+  Engineering: [
+    'Mechanical Engineering',
+    'Electrical Engineering',
+    'Civil Engineering',
+    'Chemical Engineering',
+    'Aerospace Engineering',
+  ],
+  'Business & Management': [
+    'Business Administration',
+    'Finance',
+    'Marketing',
+    'Accounting',
+    'Human Resources',
+  ],
+  'Arts & Humanities': [
+    'English Literature',
+    'History',
+    'Philosophy',
+    'Fine Arts',
+    'Languages',
+  ],
+  'Social Sciences': [
+    'Psychology',
+    'Sociology',
+    'Political Science',
+    'Economics',
+    'Anthropology',
+  ],
+  'Natural Sciences': [
+    'Biology',
+    'Chemistry',
+    'Physics',
+    'Environmental Science',
+    'Geology',
+  ],
+  'Mathematics & Statistics': [
+    'Mathematics',
+    'Statistics',
+    'Applied Mathematics',
+  ],
+  'Health & Medicine': [
+    'Nursing',
+    'Pre-Med',
+    'Public Health',
+    'Pharmacy',
+    'Physical Therapy',
+  ],
+  'Architecture & Design': [
+    'Architecture',
+    'Interior Design',
+    'Graphic Design',
+    'Urban Planning',
+  ],
+  Education: [
+    'Elementary Education',
+    'Secondary Education',
+    'Special Education',
+  ],
+  Law: ['Law', 'Criminal Justice', 'Legal Studies'],
+};
+
+const DEPARTMENTS = Object.keys(ACADEMIC_DATA);
 
 const SignUpScreen = () => {
   const navigation = useNavigation();
@@ -35,6 +115,10 @@ const SignUpScreen = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [department, setDepartment] = useState('');
+  const [major, setMajor] = useState('');
+  const [departmentModalVisible, setDepartmentModalVisible] = useState(false);
+  const [majorModalVisible, setMajorModalVisible] = useState(false);
   const [error, setError] = useState('');
   const [isLoading, setLoading] = useState(false);
 
@@ -43,17 +127,28 @@ const SignUpScreen = () => {
     email: Yup.string()
       .required('Email is required')
       .email('Invalid email format'),
+    department: Yup.string().required('Department is required'),
+    major: Yup.string().required('Major is required'),
     password: Yup.string().required('Password is required'),
     confirmPassword: Yup.string()
       .required('Confirm password is required')
       .oneOf([Yup.ref('password')], 'Password does not match'),
   });
 
+  const handleDepartmentSelect = selectedDept => {
+    setDepartment(selectedDept);
+    setMajor('');
+    setDepartmentModalVisible(false);
+    setError('');
+  };
+
   const handleSignUp = async () => {
     try {
       await signUpSchema.validate({
         name,
         email,
+        department,
+        major,
         password,
         confirmPassword,
       });
@@ -62,6 +157,8 @@ const SignUpScreen = () => {
       const response = await Api.post('api/auth/register', {
         name,
         email,
+        department,
+        major,
         password,
       });
       setLoading(false);
@@ -133,6 +230,43 @@ const SignUpScreen = () => {
                 keyboardType="email-address"
               />
             </View>
+            <Text style={styles.inputText}>DEPARTMENT</Text>
+            <TouchableOpacity
+              style={styles.categoryPicker}
+              onPress={() => setDepartmentModalVisible(true)}
+            >
+              <Text
+                style={[
+                  styles.categoryText,
+                  department && { color: COLORS.PRIMARY_BLACK },
+                ]}
+              >
+                {department || 'Select Department'}
+              </Text>
+              <ChevronDown size={20} color={COLORS.TEXT_MUTED} />
+            </TouchableOpacity>
+
+            <Text style={styles.inputText}>MAJOR</Text>
+            <TouchableOpacity
+              style={styles.categoryPicker}
+              onPress={() => {
+                if (department) {
+                  setMajorModalVisible(true);
+                } else {
+                  setError('Please select a department first');
+                }
+              }}
+            >
+              <Text
+                style={[
+                  styles.categoryText,
+                  major && { color: COLORS.PRIMARY_BLACK },
+                ]}
+              >
+                {major || 'Select Major'}
+              </Text>
+              <ChevronDown size={20} color={COLORS.TEXT_MUTED} />
+            </TouchableOpacity>
             <Text style={styles.inputText}>PASSWORD</Text>
             <View style={styles.input}>
               <LockKeyhole
@@ -167,17 +301,6 @@ const SignUpScreen = () => {
               <Text style={{ color: 'red', marginTop: 5 }}>{error}</Text>
             ) : null}
 
-            <View style={styles.createAccView}>
-              <Text style={styles.createAccText2}>
-                Already have an Account?
-              </Text>
-              <TouchableOpacity
-                style={styles.createAccBtn}
-                onPress={() => navigation.goBack()}
-              >
-                <Text style={styles.createAccBtnText}>Log In</Text>
-              </TouchableOpacity>
-            </View>
           </View>
           <View style={styles.buttonContainer}>
             <TouchableOpacity
@@ -191,9 +314,39 @@ const SignUpScreen = () => {
                 <Text style={styles.signBtnText}>Create Secure Account</Text>
               )}
             </TouchableOpacity>
+
+            <View style={styles.createAccView}>
+              <Text style={styles.createAccText2}>
+                Already have an Account?
+              </Text>
+              <TouchableOpacity
+                style={styles.createAccBtn}
+                onPress={() => navigation.goBack()}
+              >
+                <Text style={styles.createAccBtnText}>Log In</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      <SelectionModal
+        visible={departmentModalVisible}
+        setVisible={setDepartmentModalVisible}
+        title="Select Department"
+        data={DEPARTMENTS}
+        onSelect={handleDepartmentSelect}
+        selectedValue={department}
+      />
+
+      <SelectionModal
+        visible={majorModalVisible}
+        setVisible={setMajorModalVisible}
+        title="Select Major"
+        data={department ? ACADEMIC_DATA[department] : []}
+        onSelect={setMajor}
+        selectedValue={major}
+      />
     </SafeAreaView>
   );
 };
@@ -211,7 +364,7 @@ const styles = StyleSheet.create({
     paddingBottom: SPACING.xxxl,
   },
   backButton: {
-    marginTop: 60,
+    marginTop: 10,
     marginBottom: SPACING.lg,
     backgroundColor: 'rgba(0,0,0,0.1)',
     borderRadius: RADIUS.round,
@@ -245,7 +398,22 @@ const styles = StyleSheet.create({
     gap: 15,
     alignItems: 'center',
   },
-  twoRow: {},
+  categoryPicker: {
+    height: 50,
+    borderWidth: 1.5,
+    borderColor: COLORS.BORDER,
+    borderRadius: RADIUS.md,
+    paddingHorizontal: SPACING.md,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    backgroundColor: COLORS.BACKGROUND,
+  },
+  categoryText: {
+    fontSize: FONT_SIZES.sm,
+    fontFamily: FONTS.REGULAR,
+    color: COLORS.TEXT_SECONDARY,
+  },
   imageStyle: {
     width: 60,
     height: 60,

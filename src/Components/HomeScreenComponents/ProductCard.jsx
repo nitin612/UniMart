@@ -40,13 +40,13 @@ export default function ProductCard({ item }) {
           <Text style={styles.categoryText}>{item.category}</Text>
         </View>
 
-        <TouchableOpacity style={styles.favoriteBtn}>
+        {/* <TouchableOpacity style={styles.favoriteBtn}>
           <Heart
             fill={item.isFavorite ? COLORS.ERROR : 'transparent'}
             color={item.isFavorite ? COLORS.ERROR : COLORS.TEXT_PRIMARY}
             size={18}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       <View style={styles.contentContainer}>

@@ -4,6 +4,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import BottomTabs from './BottomTabs';
 import ProductDetailScreen from '../Screens/mainScreens/ProductDetailScreen';
 import EditProfileScreen from '../Screens/mainScreens/EditProfileScreen';
+import ChatConversationScreen from '../Screens/mainScreens/ChatConversationScreen';
+import MyListingsScreen from '../Screens/mainScreens/MyListingsScreen';
+import SellerProfileScreen from '../Screens/mainScreens/SellerProfileScreen';
 
 const MainStack = () => {
   const Stack = createNativeStackNavigator();
@@ -24,6 +27,15 @@ const MainStack = () => {
         options={{
           presentation: 'modal',
         }}
+      />
+      <Stack.Screen
+        name="ChatConversationScreen"
+        component={ChatConversationScreen}
+      />
+      <Stack.Screen name="MyListingsScreen" component={MyListingsScreen} />
+      <Stack.Screen
+        name="SellerProfileScreen"
+        component={SellerProfileScreen}
       />
     </Stack.Navigator>
   );

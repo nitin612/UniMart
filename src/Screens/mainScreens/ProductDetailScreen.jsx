@@ -5,9 +5,10 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
+  Image,
 } from 'react-native';
-import React from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { useState } from 'react';
+import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context';
 import { ArrowLeft, Heart, MessageCircleDashed } from 'lucide-react-native';
 import {
   COLORS,
@@ -18,9 +19,22 @@ import {
 } from '../../Constants/theme';
 import { useNavigation } from '@react-navigation/native';
 
-const ProductDetailScreen = ({ item }) => {
+const ProductDetailScreen = ({ route }) => {
   const navigation = useNavigation();
-  const arr = [1, 2, 3];
+  const { item } = route?.params;
+
+  const productListedDate = new Date(item?.createdAt);
+  const formattedDate = `${String(productListedDate.getDate()).padStart(
+    2,
+    '0',
+  )}/${String(productListedDate.getMonth() + 1).padStart(
+    2,
+    '0',
+  )}/${productListedDate.getFullYear()}`;
+  const images = item?.imageUrls || [];
+  const [BannerImage, setBannerImage] = useState(images[0] || '');
+
+  console.log('liukyjthrgfs', item);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.upperContainer}>
@@ -56,16 +70,37 @@ const ProductDetailScreen = ({ item }) => {
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.heading}>
-          <Text style={styles.headingText}>Air Max 270 React</Text>
+          <Text style={styles.headingText}>{item?.title}</Text>
         </View>
+
         <View style={styles.upperImageView}>
-          <View style={styles.mainImage}></View>
-          {arr.length > 0 && (
-            <View style={styles.smallPhotoRow}>
-              {arr.map(index => (
-                <View key={index} style={styles.smallPhoto} />
+          <Image source={{ uri: BannerImage }} style={styles.mainImage} />
+          {images.length > 0 && (
+            <ScrollView
+              style={styles.smallPhotoRow}
+              horizontal
+              contentContainerStyle={{
+                gap: SPACING.md,
+              }}
+              showsHorizontalScrollIndicator={false}
+            >
+              {images.map((item, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.smallPhoto}
+                  onPress={() => setBannerImage(item)}
+                  activeOpacity={0.7}
+                >
+                  <Image
+                    source={{ uri: item }}
+                    style={[
+                      styles.smallPhoto,
+                      BannerImage === item && styles.smallActivePhoto,
+                    ]}
+                  />
+                </TouchableOpacity>
               ))}
-            </View>
+            </ScrollView>
           )}
         </View>
 
@@ -77,8 +112,8 @@ const ProductDetailScreen = ({ item }) => {
             fill={COLORS.PRIMARY_DARK1}
           />
           <Text style={styles.wishlistBannerText}>
-            <Text style={styles.wishlistBannerCount}>245</Text> people
-            wishlisted this
+            <Text style={styles.wishlistBannerCount}>{item?.likesCount}</Text>{' '}
+            people wishlisted this
           </Text>
         </View>
 
@@ -89,22 +124,18 @@ const ProductDetailScreen = ({ item }) => {
         <View style={styles.productCondition}>
           <View style={styles.detailRow}>
             <Text style={styles.productConditionText}>Condition</Text>
-            <Text style={styles.productConditionValue}>Good</Text>
+            <Text style={styles.productConditionValue}>{item?.condition}</Text>
           </View>
           <View style={styles.detailDivider} />
           <View style={styles.detailRow}>
             <Text style={styles.productConditionText}>Type</Text>
-            <Text style={styles.productConditionValue}>Clothing</Text>
+            <Text style={styles.productConditionValue}>{item?.category}</Text>
           </View>
         </View>
 
         {/* Description Section */}
         <View style={styles.descriptionSection}>
-          <Text style={styles.descriptionText}>
-            This is a beautiful and pre-loved item in great condition. Shows
-            minimal signs of wear and comes with original packaging. Perfect for
-            daily wear or special occasions!
-          </Text>
+          <Text style={styles.descriptionText}>{item?.description}</Text>
         </View>
 
         {/* Seller Info Section */}
@@ -112,8 +143,8 @@ const ProductDetailScreen = ({ item }) => {
           <View style={styles.sellerProfile}>
             <View style={styles.sellerAvatar} />
             <View style={styles.sellerInfo}>
-              <Text style={styles.sellerName}>Sarah Parker</Text>
-              <Text style={styles.listedDate}>Listed on 12 Oct, 2026</Text>
+              <Text style={styles.sellerName}>{item?.seller?.name}</Text>
+              <Text style={styles.listedDate}>Listed on {formattedDate}</Text>
             </View>
           </View>
           <TouchableOpacity style={styles.viewProfileBtn}>
@@ -133,7 +164,7 @@ const ProductDetailScreen = ({ item }) => {
         </TouchableOpacity>
         <View style={styles.priceContainer}>
           <Text style={styles.priceText}>Price</Text>
-          <Text style={styles.actualPriceText}>$30.00</Text>
+          <Text style={styles.actualPriceText}>₹{item?.price}</Text>
         </View>
       </View>
     </SafeAreaView>
@@ -218,7 +249,7 @@ const styles = StyleSheet.create({
   },
   mainImage: {
     backgroundColor: COLORS.TEXT_MUTED,
-    height: SCREEN.width * 0.75,
+    height: SCREEN.width * 0.8,
     borderRadius: 10,
   },
   smallPhotoRow: {
@@ -230,6 +261,14 @@ const styles = StyleSheet.create({
     height: 100,
     backgroundColor: COLORS.TEXT_MUTED,
     borderRadius: 10,
+  },
+  smallActivePhoto: {
+    width: 100,
+    height: 100,
+    backgroundColor: COLORS.TEXT_MUTED,
+    borderRadius: 10,
+    borderWidth: 3,
+    borderColor: COLORS.PRIMARY_DARK1,
   },
   wrapper: {
     position: 'absolute',

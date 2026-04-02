@@ -26,13 +26,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import CustomLoader from '../../common/CustomLoader';
 import { useNavigation } from '@react-navigation/native';
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({ navigation }) => {
   const [search, setSearch] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('All');
   const dispatch = useDispatch();
   const { data, loading, error } = useSelector(state => state.items);
 
   const dataSaab = data?.items;
+  const userName = data?.items[0]?.seller?.name;
 
   useEffect(() => {
     dispatch(fetchItems());
@@ -43,7 +44,10 @@ const HomeScreen = ({navigation}) => {
     <View style={styles.headerContainer}>
       <View style={styles.topBar}>
         <View>
-          <Text style={styles.greetingText}>Hello, Scarlet!</Text>
+          <Text style={styles.greetingText}>
+            {' '}
+            Hello, {loading ? '...' : userName}!
+          </Text>
           <Text style={styles.discoverText}>UniMart discover great deals</Text>
         </View>
         <TouchableOpacity style={styles.notificationBtn}>
@@ -70,7 +74,7 @@ const HomeScreen = ({navigation}) => {
       <FlatList
         data={dataSaab}
         keyExtractor={item => item._id}
-        renderItem={({ item }) => <ProductCard item={item}/>}
+        renderItem={({ item }) => <ProductCard item={item} />}
         numColumns={2}
         columnWrapperStyle={styles.row}
         showsVerticalScrollIndicator={false}

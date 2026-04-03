@@ -95,9 +95,6 @@ const AddProduct = () => {
   };
 
 
-
-  // gffhvjbjnmefwds
-
   const postListing = async () => {
     if (!title || !price || !category || !description) {
       Alert.alert('All Fields Are Required');

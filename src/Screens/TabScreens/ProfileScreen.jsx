@@ -40,6 +40,8 @@ const ProfileScreen = () => {
   const { data, loading, error } = useSelector(state => state.profile);
 
   const listings = data?.listings?.length;
+  const listingsData = data?.listings;
+  const userData = data;
 
   if (loading)
     return (
@@ -110,7 +112,9 @@ const ProfileScreen = () => {
             name={'Edit Profile'}
             icon={ChevronRight}
             iconColor={'darkblue'}
-            onPress={() => navigation.navigate('EditProfileScreen')}
+            onPress={() =>
+              navigation.navigate('EditProfileScreen', { userData })
+            }
           />
           <ProfileOptionsListing
             backgroundColor={COLORS.ORANGE_T}
@@ -118,6 +122,9 @@ const ProfileScreen = () => {
             name={'My Listings'}
             icon={ChevronRight}
             iconColor={COLORS.orange}
+            onPress={() =>
+              navigation.navigate('MyListingsScreen', { listingsData })
+            }
           />
           <ProfileOptionsListing
             backgroundColor={COLORS.GREEN_T}
@@ -126,13 +133,13 @@ const ProfileScreen = () => {
             icon={ChevronRight}
             iconColor={COLORS.green}
           />
-          <ProfileOptionsListing
+          {/* <ProfileOptionsListing
             backgroundColor={COLORS.PURPLE_T}
             logo={Settings}
             name={'Settings'}
             icon={ChevronRight}
             iconColor={COLORS.purple}
-          />
+          /> */}
           <View style={{ marginBottom: 10 }}>
             <Text style={styles.statementText}>SUPPORT</Text>
           </View>

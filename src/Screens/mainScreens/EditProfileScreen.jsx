@@ -8,10 +8,13 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from 'react-native';
 import React, { useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 import { ArrowLeft, Camera } from 'lucide-react-native';
+import CustomLoader from '../../common/CustomLoader';
+import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import {
   COLORS,
   FONT_SIZES,
@@ -21,12 +24,56 @@ import {
   SCREEN,
 } from '../../Constants/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
-const EditProfileScreen = () => {
+import {
+  updateUserProfile,
+  fetchUserProfile,
+} from '../../redux/thunkFunctions/thunkFunctions';
+import { useDispatch, useSelector } from 'react-redux';
+
+const EditProfileScreen = ({ route }) => {
+  const { userData } = route?.params;
+
+  const dispatch = useDispatch();
   const navigation = useNavigation();
-  const [name, setName] = useState('');
-  const [bio, setBio] = useState('');
-  const [department, setDepartment] = useState('');
-  const [major, setMajor] = useState('');
+  const [name, setName] = useState(userData?.name);
+  const [bio, setBio] = useState(userData?.bio);
+  const [department, setDepartment] = useState(userData?.department);
+  const [major, setMajor] = useState(userData?.major);
+  const [images, setImages] = useState('');
+  const { data, loading, error } = useSelector(state => state.updateUser);
+
+  const handleUpdate = async () => {
+    const payload = {
+      name,
+      bio,
+      department,
+      major,
+    };
+    try {
+      const response = await dispatch(updateUserProfile(payload));
+      dispatch(fetchUserProfile());
+      if (updateUserProfile.fulfilled.match(response)) {
+        Alert.alert('Success', 'Profile Uploaded Successfully', [
+          {
+            text: 'OK',
+            onPress: () => navigation.goBack(),
+          },
+        ]);
+      }
+    } catch (err) {
+      console.log('Error occured in handleUpdate', err);
+    }
+  };
+
+  const openPhotos = async () => {
+    const result = await launchImageLibrary({
+      mediaType: 'photo',
+      quality: 0.9,
+    });
+    if (!result.didCancel && result.assets?.length > 0) {
+      setImages(result?.assets?.uri);
+    }
+  };
 
   return (
     <KeyboardAvoidingView
@@ -46,10 +93,10 @@ const EditProfileScreen = () => {
         </View>
 
         <View style={styles.avatarSection}>
-          <View style={styles.imageContainer}>
+          <TouchableOpacity style={styles.imageContainer} onPress={openPhotos}>
             <Image
               source={{
-                uri: 'https://images.unsplash.com/photo-1609505848912-b7c3b8b4beda?q=80&w=1065&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                uri: images,
               }}
               style={styles.profileImage}
             />
@@ -57,7 +104,7 @@ const EditProfileScreen = () => {
             <TouchableOpacity style={styles.cameraIcon}>
               <Camera size={16} color={COLORS.PRIMARY_BLACK} strokeWidth={2} />
             </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
 
@@ -111,10 +158,15 @@ const EditProfileScreen = () => {
           />
         </View>
 
-        <TouchableOpacity style={styles.saveBtn}>
+        <TouchableOpacity style={styles.saveBtn} onPress={handleUpdate}>
           <Text style={styles.saveBtnText}>Save Changes</Text>
         </TouchableOpacity>
       </ScrollView>
+      {loading ? (
+        <View style={styles.overLay}>
+          <CustomLoader />
+        </View>
+      ) : null}
     </KeyboardAvoidingView>
   );
 };
@@ -226,5 +278,15 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.BOLD,
     fontSize: FONT_SIZES.md,
     color: COLORS.BACKGROUND,
+  },
+  overLay: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.2)',
   },
 });

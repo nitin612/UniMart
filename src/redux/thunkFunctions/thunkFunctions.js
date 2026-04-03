@@ -26,3 +26,16 @@ export const fetchItems = createAsyncThunk(
     }
   },
 );
+
+export const updateUserProfile = createAsyncThunk(
+  'profile/updateProfile',
+  async (payload, thunkAPI) => {
+    try {
+      const response = await API.put('/api/auth/profile', payload);
+      console.log('UpdatedUserProfile response====>', response.data);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  },
+);

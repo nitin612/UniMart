@@ -24,9 +24,9 @@ const MainStack = () => {
       <Stack.Screen
         name="EditProfileScreen"
         component={EditProfileScreen}
-        options={{
-          presentation: 'modal',
-        }}
+        // options={{
+        //   presentation: 'modal',
+        // }}
       />
       <Stack.Screen
         name="ChatConversationScreen"

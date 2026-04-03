@@ -7,6 +7,7 @@ import EditProfileScreen from '../Screens/mainScreens/EditProfileScreen';
 import ChatConversationScreen from '../Screens/mainScreens/ChatConversationScreen';
 import MyListingsScreen from '../Screens/mainScreens/MyListingsScreen';
 import SellerProfileScreen from '../Screens/mainScreens/SellerProfileScreen';
+import MyListingPreviewScreen from '../Screens/mainScreens/MyListingPreviewScreen';
 
 const MainStack = () => {
   const Stack = createNativeStackNavigator();
@@ -36,6 +37,10 @@ const MainStack = () => {
       <Stack.Screen
         name="SellerProfileScreen"
         component={SellerProfileScreen}
+      />
+      <Stack.Screen
+        name="MyListingPreviewScreen"
+        component={MyListingPreviewScreen}
       />
     </Stack.Navigator>
   );

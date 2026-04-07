@@ -8,7 +8,15 @@ import {
 } from 'react-native';
 import { COLORS, SPACING, RADIUS, FONTS } from '../../Constants/theme';
 
-const OPTIONS = ['All', 'Textbooks', 'Electronics', 'Housing', 'Services'];
+const OPTIONS = [
+  'All',
+  'Electronics',
+  'Books',
+  'Clothing',
+  'Furniture',
+  'Sports',
+  'Other',
+];
 
 export default function FilterChips({ selected, onSelect }) {
   return (

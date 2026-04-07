@@ -33,12 +33,20 @@ const HomeScreen = ({ navigation }) => {
   const { data, loading, error } = useSelector(state => state.items);
 
   const dataSaab = data?.items;
+  console.log(dataSaab, 'liuykjthregfds');
   const userName = data?.items[0]?.seller?.name;
 
   useEffect(() => {
     dispatch(fetchItems());
     dispatch(fetchUserProfile());
   }, []);
+
+  const filterData = (dataSaab || []).filter(item => {
+    const matchesCategory =
+      selectedFilter === 'All' ||
+      selectedFilter.toLowerCase() === item.category.toLowerCase();
+    return matchesCategory;
+  });
 
   const renderHeader = () => (
     <View style={styles.headerContainer}>
@@ -72,7 +80,7 @@ const HomeScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.safeArea}>
       <FlatList
-        data={dataSaab}
+        data={filterData}
         keyExtractor={item => item._id}
         renderItem={({ item }) => <ProductCard item={item} />}
         numColumns={2}

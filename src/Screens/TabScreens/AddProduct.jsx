@@ -32,6 +32,8 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import API from '../../api/Api';
 import CustomLoader from '../../common/CustomLoader';
+import { fetchItems ,fetchUserProfile} from '../../redux/thunkFunctions/thunkFunctions';
+import { useDispatch } from 'react-redux';
 
 const CATEGORIES = [
   'Electronics',
@@ -55,6 +57,7 @@ const AddProduct = () => {
   const [price, setPrice] = useState(null);
   const [description, setDescription] = useState('');
   const [isLoading, setLoading] = useState(false);
+  const dispatch = useDispatch();
 
   const openCamera = async () => {
     setVisible(false);
@@ -94,7 +97,6 @@ const AddProduct = () => {
     setImages(prev => prev.filter((_, i) => i !== index));
   };
 
-
   const postListing = async () => {
     if (!title || !price || !category || !description) {
       Alert.alert('All Fields Are Required');
@@ -129,6 +131,8 @@ const AddProduct = () => {
       });
       console.log('response', response);
       if (response.status == 200 || response.status == 201) {
+        dispatch(fetchItems());
+        dispatch(fetchUserProfile());
         Alert.alert('Item Uploaded Successfully');
         setCategory('');
         setTitle('');
@@ -158,9 +162,7 @@ const AddProduct = () => {
 
         {/* Photos Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>
-            Photos ({images.length}/4)
-          </Text>
+          <Text style={styles.sectionTitle}>Photos ({images.length}/4)</Text>
           <View style={styles.photoContainer}>
             {/* Main / first photo slot */}
             {images[0] ? (
@@ -197,7 +199,7 @@ const AddProduct = () => {
 
             {/* Small photo slots 2-4 */}
             <View style={styles.smallPhotoRow}>
-              {[1, 2, 3].map(index => (
+              {[1, 2, 3].map(index =>
                 images[index] ? (
                   <View key={index} style={styles.smallPhotoWrapper}>
                     <Image
@@ -219,8 +221,8 @@ const AddProduct = () => {
                   >
                     <Plus size={24} color={COLORS.TEXT_MUTED} />
                   </TouchableOpacity>
-                )
-              ))}
+                ),
+              )}
             </View>
           </View>
         </View>

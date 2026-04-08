@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,6 +6,7 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
+  Alert,
 } from 'react-native';
 import { Heart, Plus } from 'lucide-react-native';
 import {
@@ -17,6 +18,7 @@ import {
   FONT_SIZES,
 } from '../../Constants/theme';
 import { useNavigation } from '@react-navigation/native';
+import API from '../../api/Api';
 
 const { width } = Dimensions.get('window');
 
@@ -24,6 +26,19 @@ const CARD_WIDTH = (width - SPACING.lg * 2 - SPACING.md) / 2;
 
 export default function ProductCard({ item }) {
   const navigation = useNavigation();
+  const [isLiked, setIsLiked] = useState(item.likesCount);
+
+  const likeProduct = async itemId => {
+    const newlikedItem = !isLiked;
+    setIsLiked(newlikedItem);
+    try {
+      const response = await API.post(`api/likes/${itemId}`);
+      return response;
+    } catch (err) {
+      setIsLiked(!newlikedItem)
+      console.warn('Error occurred while liking the product', err);
+    }
+  };
   return (
     <TouchableOpacity
       style={styles.card}
@@ -40,13 +55,16 @@ export default function ProductCard({ item }) {
           <Text style={styles.categoryText}>{item.category}</Text>
         </View>
 
-        {/* <TouchableOpacity style={styles.favoriteBtn}>
+        <TouchableOpacity
+          style={styles.favoriteBtn}
+          onPress={() => likeProduct(item._id)}
+        >
           <Heart
-            fill={item.isFavorite ? COLORS.ERROR : 'transparent'}
-            color={item.isFavorite ? COLORS.ERROR : COLORS.TEXT_PRIMARY}
+            fill={isLiked ? COLORS.ERROR : 'transparent'}
+            color={isLiked ? COLORS.ERROR : COLORS.TEXT_PRIMARY}
             size={18}
           />
-        </TouchableOpacity> */}
+        </TouchableOpacity>
       </View>
 
       <View style={styles.contentContainer}>

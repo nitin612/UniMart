@@ -34,7 +34,6 @@ const ProductDetailScreen = ({ route }) => {
   const images = item?.imageUrls || [];
   const [BannerImage, setBannerImage] = useState(images[0] || '');
 
-  console.log('liukyjthrgfs', item);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.upperContainer}>
@@ -141,7 +140,12 @@ const ProductDetailScreen = ({ route }) => {
         {/* Seller Info Section */}
         <View style={styles.sellerContainer}>
           <View style={styles.sellerProfile}>
-            <View style={styles.sellerAvatar} />
+            <View style={styles.sellerAvatar}>
+              <Image
+                source={{ uri: item?.seller?.avatar }}
+                style={{ width: 48, height: 48 }}
+              />
+            </View>
             <View style={styles.sellerInfo}>
               <Text style={styles.sellerName}>{item?.seller?.name}</Text>
               <Text style={styles.listedDate}>Listed on {formattedDate}</Text>

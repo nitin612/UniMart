@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   StatusBar,
+  Alert,
 } from 'react-native';
 import {
   Heart,
@@ -27,11 +28,48 @@ import {
 } from '../../Constants/theme';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import API from '../../api/Api';
+import { useDispatch } from 'react-redux';
+import {
+  fetchUserProfile,
+  fetchItems,
+} from '../../redux/thunkFunctions/thunkFunctions';
+import CustomLoader from '../../common/CustomLoader';
 
 const MyListingsScreen = ({ route }) => {
   const navigation = useNavigation();
   const { listingsData } = route?.params || {};
   const listingCount = listingsData?.length || 0;
+  const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleDelete = async itemId => {
+    Alert.alert('Delete Item', 'Are you sure you want to delete this item?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          try {
+            setIsLoading(true);
+            const response = await API.delete(`api/items/${itemId}`);
+            if (response.status === 200 || response.status === 204) {
+              setIsLoading(false);
+              dispatch(fetchUserProfile());
+              dispatch(fetchItems());
+              navigation.goBack();
+            }
+          } catch (err) {
+            console.warn('unable to delete', err);
+            Alert.alert('Error', 'Something went wrong while deleting.');
+          }
+        },
+      },
+    ]);
+  };
 
   const renderItem = ({ item }) => {
     return (
@@ -39,7 +77,9 @@ const MyListingsScreen = ({ route }) => {
         <TouchableOpacity
           style={styles.cardContent}
           activeOpacity={0.8}
-          onPress={() => navigation.navigate('MyListingPreviewScreen', { item })}
+          onPress={() =>
+            navigation.navigate('MyListingPreviewScreen', { item })
+          }
         >
           <View style={styles.imageWrapper}>
             <Image
@@ -83,7 +123,10 @@ const MyListingsScreen = ({ route }) => {
                 <Text style={styles.actionText}>Edit</Text>
               </TouchableOpacity>
               <View style={styles.actionDivider} />
-              <TouchableOpacity style={styles.actionIconBtn}>
+              <TouchableOpacity
+                style={styles.actionIconBtn}
+                onPress={() => handleDelete(item._id)}
+              >
                 <Trash2 size={16} color={COLORS.ERROR} />
                 <Text style={[styles.actionText, { color: COLORS.ERROR }]}>
                   Delete
@@ -149,6 +192,11 @@ const MyListingsScreen = ({ route }) => {
           </View>
         }
       />
+      {isLoading ? (
+        <View style={styles.overLay}>
+          <CustomLoader />
+        </View>
+      ) : null}
     </View>
   );
 };
@@ -345,5 +393,15 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontFamily: FONTS.BOLD,
     fontSize: FONT_SIZES.md,
+  },
+  overLay: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'rgba(0,0,0,0.2)',
   },
 });

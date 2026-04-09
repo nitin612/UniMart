@@ -39,3 +39,16 @@ export const updateUserProfile = createAsyncThunk(
     }
   },
 );
+
+// export const addItemInCart = createAsyncThunk(
+//   'cart/addToCart',
+//   async (itemId, thunkAPI) => {
+//     try {
+//       const response = await API.post(`/api/cart/${itemId}`);
+//       console.log('AddtoCartResponse response====>', response.data);
+//       return response.data;
+//     } catch (error) {
+//       return thunkAPI.rejectWithValue(error);
+//     }
+//   },
+// );

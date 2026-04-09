@@ -7,8 +7,9 @@ import {
   TouchableOpacity,
   Dimensions,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
-import { Heart, Plus } from 'lucide-react-native';
+import { FileMinus, Heart, Plus } from 'lucide-react-native';
 import {
   COLORS,
   SPACING,
@@ -19,6 +20,7 @@ import {
 } from '../../Constants/theme';
 import { useNavigation } from '@react-navigation/native';
 import API from '../../api/Api';
+import { useSelector, useDispatch } from 'react-redux';
 
 const { width } = Dimensions.get('window');
 
@@ -27,6 +29,8 @@ const CARD_WIDTH = (width - SPACING.lg * 2 - SPACING.md) / 2;
 export default function ProductCard({ item }) {
   const navigation = useNavigation();
   const [isLiked, setIsLiked] = useState(item.likesCount);
+  const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
 
   const likeProduct = async itemId => {
     const newlikedItem = !isLiked;
@@ -35,8 +39,21 @@ export default function ProductCard({ item }) {
       const response = await API.post(`api/likes/${itemId}`);
       return response;
     } catch (err) {
-      setIsLiked(!newlikedItem)
+      setIsLiked(!newlikedItem);
       console.warn('Error occurred while liking the product', err);
+    }
+  };
+  const addToCartItem = async itemId => {
+    try {
+      setIsLoading(true);
+      const response = await API.post(`/api/cart/${itemId}`);
+      console.log('AddtoCartResponse response====>', response.data);
+      return response.data;
+    } catch (error) {
+      console.log('unable to add in cart', error);
+      return error;
+    } finally {
+      setIsLoading(false);
     }
   };
   return (
@@ -75,8 +92,16 @@ export default function ProductCard({ item }) {
 
         <View style={styles.footerRow}>
           <Text style={styles.price}>₹{item.price.toFixed(2)}</Text>
-          <TouchableOpacity style={styles.actionBtn}>
-            <Plus color={COLORS.BACKGROUND} size={18} strokeWidth={3} />
+          <TouchableOpacity
+            style={styles.actionBtn}
+            onPress={() => addToCartItem(item._id)}
+          >
+            {isLoading ? (
+              <ActivityIndicator size="small" color={'pink'} />
+            ) : (
+              
+              <Plus color={COLORS.BACKGROUND} size={18} strokeWidth={3} />
+            )}
           </TouchableOpacity>
         </View>
       </View>

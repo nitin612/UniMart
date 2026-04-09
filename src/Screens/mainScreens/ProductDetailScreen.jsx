@@ -18,10 +18,27 @@ import {
   SPACING,
 } from '../../Constants/theme';
 import { useNavigation } from '@react-navigation/native';
+import API from '../../api/Api';
+import { useDispatch } from 'react-redux';
+import { fetchItems } from '../../redux/thunkFunctions/thunkFunctions';
 
 const ProductDetailScreen = ({ route }) => {
   const navigation = useNavigation();
   const { item } = route?.params;
+  const dispatch = useDispatch();
+  const [isLiked, setIsLiked] = useState(item.likesCount);
+
+  const likeProduct = async itemId => {
+    const newlikedItem = !isLiked;
+    setIsLiked(newlikedItem);
+    try {
+      const response = await API.post(`api/likes/${itemId}`);
+      return response;
+    } catch (err) {
+      setIsLiked(!newlikedItem);
+      console.warn('Error occurred while liking the product', err);
+    }
+  };
 
   const productListedDate = new Date(item?.createdAt);
   const formattedDate = `${String(productListedDate.getDate()).padStart(
@@ -54,6 +71,7 @@ const ProductDetailScreen = ({ route }) => {
               gap: 10,
             },
           ]}
+          onPress={() => likeProduct(item._id)}
         >
           <View
             style={{
@@ -62,7 +80,12 @@ const ProductDetailScreen = ({ route }) => {
               borderRadius: 30,
             }}
           >
-            <Heart size={26} color={COLORS.PRIMARY_BLACK} strokeWidth={2.5} />
+            <Heart
+              size={26}
+              color={isLiked > 0 ? COLORS.ERROR : COLORS.PRIMARY_BLACK}
+              fill={isLiked > 0 ? COLORS.ERROR : COLORS.ERROR_LIGHT}
+              strokeWidth={2.5}
+            />
           </View>
           <Text style={styles.likeIconText}>Like</Text>
         </TouchableOpacity>

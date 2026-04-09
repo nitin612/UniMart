@@ -39,13 +39,14 @@ const EditProfileScreen = ({ route }) => {
   const [bio, setBio] = useState(userData?.bio);
   const [department, setDepartment] = useState(userData?.department);
   const [major, setMajor] = useState(userData?.major);
-  const [images, setImages] = useState('');
+  const [avatar, setAvatar] = useState('');
   const { data, loading, error } = useSelector(state => state.updateUser);
 
   const handleUpdate = async () => {
     const payload = {
       name,
       bio,
+      avatar,
       department,
       major,
     };
@@ -71,7 +72,7 @@ const EditProfileScreen = ({ route }) => {
       quality: 0.9,
     });
     if (!result.didCancel && result.assets?.length > 0) {
-      setImages(result?.assets?.uri);
+      setAvatar(result?.assets[0]?.uri);
     }
   };
 
@@ -96,7 +97,7 @@ const EditProfileScreen = ({ route }) => {
           <TouchableOpacity style={styles.imageContainer} onPress={openPhotos}>
             <Image
               source={{
-                uri: images,
+                uri: avatar || userData?.avatar, 
               }}
               style={styles.profileImage}
             />

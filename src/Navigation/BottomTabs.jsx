@@ -13,6 +13,7 @@ import {
   MessageSquareMore,
   Plus,
   Heart,
+  ShoppingBasket,
 } from 'lucide-react-native';
 import { COLORS, RADIUS, SPACING } from '../Constants/theme';
 
@@ -50,7 +51,7 @@ const BottomTabs = () => {
         name="CartScreen"
         component={CartScreen}
         options={{
-          tabBarIcon: () => <Heart size={25} color="black" strokeWidth={2}/>,
+          tabBarIcon: () => <ShoppingCart size={25} color="black" strokeWidth={2}/>,
         }}
       />
       <Tab.Screen

@@ -27,6 +27,7 @@ import {
   Settings,
   BadgeQuestionMark,
   LogOut,
+  Heart,
 } from 'lucide-react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
@@ -62,7 +63,7 @@ const ProfileScreen = () => {
           <View style={styles.imageConatiner}>
             <Image
               source={{
-                uri: 'https://images.unsplash.com/photo-1609505848912-b7c3b8b4beda?q=80&w=1065&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                uri: userData?.avatar || 'https://images.unsplash.com/photo-1609505848912-b7c3b8b4beda?q=80&w=1065&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
               }}
               style={styles.profileImage}
             />
@@ -133,13 +134,13 @@ const ProfileScreen = () => {
             icon={ChevronRight}
             iconColor={COLORS.green}
           />
-          {/* <ProfileOptionsListing
+          <ProfileOptionsListing
             backgroundColor={COLORS.PURPLE_T}
-            logo={Settings}
-            name={'Settings'}
+            logo={Heart}
+            name={'Liked Items'}
             icon={ChevronRight}
             iconColor={COLORS.purple}
-          /> */}
+          />
           <View style={{ marginBottom: 10 }}>
             <Text style={styles.statementText}>SUPPORT</Text>
           </View>

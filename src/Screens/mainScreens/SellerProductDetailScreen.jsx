@@ -22,7 +22,7 @@ import API from '../../api/Api';
 import { useDispatch } from 'react-redux';
 import { fetchItems } from '../../redux/thunkFunctions/thunkFunctions';
 
-const ProductDetailScreen = ({ route }) => {
+const SellerProductDetailScreen = ({ route }) => {
   const navigation = useNavigation();
   const { item } = route?.params;
   const dispatch = useDispatch();
@@ -106,18 +106,18 @@ const ProductDetailScreen = ({ route }) => {
               }}
               showsHorizontalScrollIndicator={false}
             >
-              {images.map((item, index) => (
+              {images.map((img, index) => (
                 <TouchableOpacity
                   key={index}
                   style={styles.smallPhoto}
-                  onPress={() => setBannerImage(item)}
+                  onPress={() => setBannerImage(img)}
                   activeOpacity={0.7}
                 >
                   <Image
-                    source={{ uri: item }}
+                    source={{ uri: img }}
                     style={[
                       styles.smallPhoto,
-                      BannerImage === item && styles.smallActivePhoto,
+                      BannerImage === img && styles.smallActivePhoto,
                     ]}
                   />
                 </TouchableOpacity>
@@ -153,37 +153,19 @@ const ProductDetailScreen = ({ route }) => {
             <Text style={styles.productConditionText}>Type</Text>
             <Text style={styles.productConditionValue}>{item?.category}</Text>
           </View>
+          <View style={styles.detailDivider} />
+          <View style={styles.detailRow}>
+            <Text style={styles.productConditionText}>Listed on</Text>
+            <Text style={styles.productConditionValue}>{formattedDate}</Text>
+          </View>
         </View>
 
         {/* Description Section */}
         <View style={styles.descriptionSection}>
           <Text style={styles.descriptionText}>{item?.description}</Text>
         </View>
-
-        {/* Seller Info Section */}
-        <View style={styles.sellerContainer}>
-          <View style={styles.sellerProfile}>
-            <View style={styles.sellerAvatar}>
-              <Image
-                source={{ uri: item?.seller?.avatar }}
-                style={{ width: 48, height: 48 }}
-              />
-            </View>
-            <View style={styles.sellerInfo}>
-              <Text style={styles.sellerName}>{item?.seller?.name}</Text>
-              <Text style={styles.listedDate}>Listed on {formattedDate}</Text>
-            </View>
-          </View>
-          <TouchableOpacity
-            style={styles.viewProfileBtn}
-            onPress={() =>
-              navigation.navigate('UserDetailScreen', { id: item?.seller?._id })
-            }
-          >
-            <Text style={styles.viewProfileText}>View</Text>
-          </TouchableOpacity>
-        </View>
       </ScrollView>
+
       {/* {Absolute Button} */}
       <View style={styles.wrapper}>
         <TouchableOpacity style={styles.messageBtn}>
@@ -203,7 +185,7 @@ const ProductDetailScreen = ({ route }) => {
   );
 };
 
-export default ProductDetailScreen;
+export default SellerProductDetailScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -269,6 +251,7 @@ const styles = StyleSheet.create({
   descriptionSection: {
     marginTop: 24,
     paddingHorizontal: 4,
+    marginBottom: 100,
   },
   descriptionText: {
     fontFamily: FONTS.REGULAR,
@@ -438,18 +421,5 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.REGULAR,
     fontSize: FONT_SIZES.sm,
     color: COLORS.TEXT_MUTED,
-  },
-  viewProfileBtn: {
-    backgroundColor: COLORS.BACKGROUND_LIGHT,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: COLORS.BORDER,
-  },
-  viewProfileText: {
-    fontFamily: FONTS.SEMIBOLD,
-    fontSize: FONT_SIZES.sm,
-    color: COLORS.PRIMARY_BLACK,
   },
 });

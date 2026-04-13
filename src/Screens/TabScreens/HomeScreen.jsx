@@ -33,7 +33,6 @@ const HomeScreen = ({ navigation }) => {
   const { data, loading, error } = useSelector(state => state.items);
 
   const dataSaab = data?.items;
-  console.log(dataSaab, 'liuykjthregfds');
   const userName = data?.items[0]?.seller?.name;
 
   useEffect(() => {
@@ -58,10 +57,10 @@ const HomeScreen = ({ navigation }) => {
           </Text>
           <Text style={styles.discoverText}>UniMart discover great deals</Text>
         </View>
-        <TouchableOpacity style={styles.notificationBtn}>
+        {/* <TouchableOpacity style={styles.notificationBtn}>
           <Bell color={COLORS.PRIMARY_DARK1} size={24} />
           <View style={styles.badge} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </View>
 
       <SearchBar value={search} onChangeText={setSearch} />

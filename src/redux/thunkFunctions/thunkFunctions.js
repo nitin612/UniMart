@@ -52,3 +52,16 @@ export const updateUserProfile = createAsyncThunk(
 //     }
 //   },
 // );
+
+export const fetchUserDetails = createAsyncThunk(
+  'user/fetchUser',
+  async (id, thunkAPI) => {
+    try {
+      const response = await API.get(`/api/users/${id}`);
+      console.log('userDetails====>', response.data);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  },
+);

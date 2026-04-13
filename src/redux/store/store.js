@@ -4,6 +4,7 @@ import profileReducer from '../slices/userProfileSlice';
 import itemReducer from '../slices/itemsSlice';
 import updateUserReducer from '../slices/updateUserSlice';
 import addToCartSlice from '../slices/addToCartSlice';
+import userDetailsSlice from '../slices/userDetailsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
     items: itemReducer,
     updateUser: updateUserReducer,
     cart: addToCartSlice,
+    userDetails: userDetailsSlice,
   },
 });

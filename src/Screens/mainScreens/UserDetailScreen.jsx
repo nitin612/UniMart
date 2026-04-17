@@ -6,6 +6,7 @@ import {
   FlatList,
   TouchableOpacity,
   StatusBar,
+  Alert,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -57,8 +58,6 @@ const UserDetailScreen = ({ route }) => {
 
   const {
     data: followData,
-    followers,
-    following,
     loading: followLoading,
     error,
   } = useSelector(state => state.follow);
@@ -66,7 +65,12 @@ const UserDetailScreen = ({ route }) => {
   const handleFollow = () => {
     const newFollow = !isFollow;
     setIsFollow(newFollow);
-    dispatch(followUser(userId));
+    try {
+      dispatch(followUser(userId));
+    } catch (err) {
+      console.warn('error in follow', err);
+    }
+
     console.log('Follow handled');
   };
 

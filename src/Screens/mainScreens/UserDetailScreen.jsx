@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   StatusBar,
 } from 'react-native';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -33,20 +33,40 @@ import {
   SCREEN,
   SPACING,
 } from '../../Constants/theme';
+import {
+  followUser,
+  getFollowers,
+  getFollowing,
+} from '../../redux/thunkFunctions/thunkFunctions';
 
 const UserDetailScreen = ({ route }) => {
   const navigation = useNavigation();
   const id = route?.params?.id;
   const dispatch = useDispatch();
+  const { data: userData } = useSelector(state => state.profile);
 
   useEffect(() => {
     dispatch(fetchUserDetails(id));
   }, [id, dispatch]);
 
   const { data, loading } = useSelector(state => state.userDetails);
+  const userId = data?._id;
+  const [isFollow, setIsFollow] = useState(
+    userData?.following.some(p => p.item === userId),
+  );
+
+  const {
+    data: followData,
+    followers,
+    following,
+    loading: followLoading,
+    error,
+  } = useSelector(state => state.follow);
 
   const handleFollow = () => {
-    // Placeholder for follow logic
+    const newFollow = !isFollow;
+    setIsFollow(newFollow);
+    dispatch(followUser(userId));
     console.log('Follow handled');
   };
 
@@ -118,11 +138,11 @@ const UserDetailScreen = ({ route }) => {
             activeOpacity={0.7}
             style={[
               styles.followBtn,
-              data?.isFollowing ? styles.followingBtn : styles.followBtnPrimary,
+              isFollow ? styles.followingBtn : styles.followBtnPrimary,
             ]}
             onPress={handleFollow}
           >
-            {data?.isFollowing ? (
+            {isFollow ? (
               <UserCheck size={18} color={COLORS.PRIMARY_DARK1} />
             ) : (
               <UserPlus size={18} color="#FFF" />
@@ -130,10 +150,12 @@ const UserDetailScreen = ({ route }) => {
             <Text
               style={[
                 styles.followText,
-                { color: data?.isFollowing ? COLORS.PRIMARY_DARK1 : '#FFF' },
+                {
+                  color: isFollow ? COLORS.PRIMARY_DARK1 : '#FFF',
+                },
               ]}
             >
-              {data?.isFollowing ? 'Following' : 'Follow'}
+              {isFollow ? 'Following' : 'Follow'}
             </Text>
           </TouchableOpacity>
 

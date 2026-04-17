@@ -65,3 +65,40 @@ export const fetchUserDetails = createAsyncThunk(
     }
   },
 );
+
+export const followUser = createAsyncThunk(
+  'follow/followUser',
+  async (id, thunkAPI) => {
+    try {
+      const response = await API.post(`/api/users/follow/${id}`);
+      console.log('follow user API response====>', response.data);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  },
+);
+export const getFollowers = createAsyncThunk(
+  'follower/followerUser',
+  async (id, thunkAPI) => {
+    try {
+      const response = await API.get(`/api/users/${id}/followers`);
+      console.log('followers API response====>', response.data);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  },
+);
+export const getFollowing = createAsyncThunk(
+  'following/followingUser',
+  async (id, thunkAPI) => {
+    try {
+      const response = await API.get(`/api/users/${id}/following`);
+      console.log('following API response====>', response.data);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  },
+);

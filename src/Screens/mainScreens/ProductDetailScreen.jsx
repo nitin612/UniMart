@@ -19,14 +19,15 @@ import {
 } from '../../Constants/theme';
 import { useNavigation } from '@react-navigation/native';
 import API from '../../api/Api';
-import { useDispatch } from 'react-redux';
+import { useDispatch , useSelector } from 'react-redux';
 import { fetchItems } from '../../redux/thunkFunctions/thunkFunctions';
 
 const ProductDetailScreen = ({ route }) => {
+  const { data: userData } = useSelector(state => state.profile);
   const navigation = useNavigation();
   const { item } = route?.params;
   const dispatch = useDispatch();
-  const [isLiked, setIsLiked] = useState(item.likesCount);
+  const [isLiked, setIsLiked] = useState(userData?.likedItems.includes(item._id));
 
   const likeProduct = async itemId => {
     const newlikedItem = !isLiked;

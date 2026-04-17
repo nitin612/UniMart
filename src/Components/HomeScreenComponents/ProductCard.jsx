@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -34,7 +34,15 @@ export default function ProductCard({ item }) {
   );
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const [isAdded, setIsAdded] = useState(false);
+  const [isAdded, setIsAdded] = useState(
+    userData?.cart.some(cartItem => cartItem.item === item._id) || false,
+  );
+
+  useEffect(() => {
+    if (userData?.cart.some(cartItem => cartItem.item === item._id)) {
+      setIsAdded(true);
+    }
+  }, [userData, item._id]);
 
   const likeProduct = async itemId => {
     const newlikedItem = !isLiked;

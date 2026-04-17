@@ -31,13 +31,14 @@ const HomeScreen = ({ navigation }) => {
   const [selectedFilter, setSelectedFilter] = useState('All');
   const dispatch = useDispatch();
   const { data, loading, error } = useSelector(state => state.items);
+  const { data: userData } = useSelector(state => state.profile);
 
   const dataSaab = data?.items;
-  const userName = data?.items[0]?.seller?.name;
+  const userName = userData?.name;
 
   useEffect(() => {
-    dispatch(fetchItems());
     dispatch(fetchUserProfile());
+    dispatch(fetchItems());
   }, []);
 
   const filterData = (dataSaab || []).filter(item => {

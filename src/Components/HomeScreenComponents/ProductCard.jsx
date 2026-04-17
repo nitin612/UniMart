@@ -9,7 +9,7 @@ import {
   Alert,
   ActivityIndicator,
 } from 'react-native';
-import { FileMinus, Heart, Plus } from 'lucide-react-native';
+import { FileMinus, Heart, Plus, CircleCheckBig } from 'lucide-react-native';
 import {
   COLORS,
   SPACING,
@@ -27,10 +27,14 @@ const { width } = Dimensions.get('window');
 const CARD_WIDTH = (width - SPACING.lg * 2 - SPACING.md) / 2;
 
 export default function ProductCard({ item }) {
+  const { data: userData } = useSelector(state => state.profile);
   const navigation = useNavigation();
-  const [isLiked, setIsLiked] = useState(item.likesCount);
+  const [isLiked, setIsLiked] = useState(
+    userData?.likedItems.includes(item._id),
+  );
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
+  const [isAdded, setIsAdded] = useState(false);
 
   const likeProduct = async itemId => {
     const newlikedItem = !isLiked;
@@ -48,6 +52,7 @@ export default function ProductCard({ item }) {
       setIsLoading(true);
       const response = await API.post(`/api/cart/${itemId}`);
       console.log('AddtoCartResponse response====>', response.data);
+      setIsAdded(true);
       return response.data;
     } catch (error) {
       console.log('unable to add in cart', error);
@@ -98,8 +103,13 @@ export default function ProductCard({ item }) {
           >
             {isLoading ? (
               <ActivityIndicator size="small" color={'pink'} />
+            ) : isAdded ? (
+              <CircleCheckBig
+                color={COLORS.BACKGROUND}
+                size={18}
+                strokeWidth={3}
+              />
             ) : (
-              
               <Plus color={COLORS.BACKGROUND} size={18} strokeWidth={3} />
             )}
           </TouchableOpacity>

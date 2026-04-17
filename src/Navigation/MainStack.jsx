@@ -8,8 +8,9 @@ import ChatConversationScreen from '../Screens/mainScreens/ChatConversationScree
 import MyListingsScreen from '../Screens/mainScreens/MyListingsScreen';
 import SellerProfileScreen from '../Screens/mainScreens/SellerProfileScreen';
 import MyListingPreviewScreen from '../Screens/mainScreens/MyListingPreviewScreen';
-import UserDetailScreen from "../Screens/mainScreens/UserDetailScreen";
+import UserDetailScreen from '../Screens/mainScreens/UserDetailScreen';
 import SellerProductDetailScreen from '../Screens/mainScreens/SellerProductDetailScreen';
+import LikedItems from '../Screens/mainScreens/ProfileScreens/LikedItems';
 
 const MainStack = () => {
   const Stack = createNativeStackNavigator();
@@ -44,14 +45,12 @@ const MainStack = () => {
         name="MyListingPreviewScreen"
         component={MyListingPreviewScreen}
       />
-      <Stack.Screen
-        name="UserDetailScreen"
-        component={UserDetailScreen}
-      />
+      <Stack.Screen name="UserDetailScreen" component={UserDetailScreen} />
       <Stack.Screen
         name="SellerProductDetailScreen"
         component={SellerProductDetailScreen}
       />
+      <Stack.Screen name="LikedItems" component={LikedItems} />
     </Stack.Navigator>
   );
 };

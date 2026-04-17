@@ -42,6 +42,7 @@ const ProfileScreen = () => {
 
   const listings = data?.listings?.length;
   const listingsData = data?.listings;
+  const likedItems = data?.likedItems;
   const userData = data;
 
   if (loading)
@@ -63,7 +64,9 @@ const ProfileScreen = () => {
           <View style={styles.imageConatiner}>
             <Image
               source={{
-                uri: userData?.avatar || 'https://images.unsplash.com/photo-1609505848912-b7c3b8b4beda?q=80&w=1065&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                uri:
+                  userData?.avatar ||
+                  'https://images.unsplash.com/photo-1609505848912-b7c3b8b4beda?q=80&w=1065&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
               }}
               style={styles.profileImage}
             />
@@ -140,6 +143,7 @@ const ProfileScreen = () => {
             name={'Liked Items'}
             icon={ChevronRight}
             iconColor={COLORS.purple}
+            onPress={() => navigation.navigate('LikedItems')}
           />
           <View style={{ marginBottom: 10 }}>
             <Text style={styles.statementText}>SUPPORT</Text>

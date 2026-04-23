@@ -118,7 +118,12 @@ const MyListingsScreen = ({ route }) => {
             </View>
 
             <View style={styles.actionToolbar}>
-              <TouchableOpacity style={styles.actionIconBtn}>
+              <TouchableOpacity
+                style={styles.actionIconBtn}
+                onPress={() =>
+                  navigation.navigate('EditProductScreen', { item })
+                }
+              >
                 <Edit3 size={16} color={COLORS.TEXT_SECONDARY} />
                 <Text style={styles.actionText}>Edit</Text>
               </TouchableOpacity>

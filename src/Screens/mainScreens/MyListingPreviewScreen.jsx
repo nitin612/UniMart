@@ -138,7 +138,7 @@ const MyListingPreviewScreen = ({ route }) => {
 
               <View style={styles.metaDivider} />
 
-              <View style={styles.actionRow}>
+              {/* <View style={styles.actionRow}>
                 <TouchableOpacity style={styles.editBtn}>
                   <Edit3 size={18} color="#FFF" />
                   <Text style={styles.editBtnText}>Edit</Text>
@@ -147,7 +147,7 @@ const MyListingPreviewScreen = ({ route }) => {
                   <Trash2 size={18} color={COLORS.ERROR} />
                   <Text style={styles.deleteBtnText}>Delete</Text>
                 </TouchableOpacity>
-              </View>
+              </View> */}
             </View>
           </View>
         </View>

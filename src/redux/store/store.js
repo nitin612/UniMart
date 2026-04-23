@@ -3,9 +3,9 @@ import authReducer from '../slices/authSlice';
 import profileReducer from '../slices/userProfileSlice';
 import itemReducer from '../slices/itemsSlice';
 import updateUserReducer from '../slices/updateUserSlice';
-import addToCartSlice from '../slices/addToCartSlice';
 import userDetailsSlice from '../slices/userDetailsSlice';
 import followReducer from '../slices/followSlice';
+import cartReducer from '../slices/cartSlice';
 
 export const store = configureStore({
   reducer: {
@@ -13,8 +13,8 @@ export const store = configureStore({
     profile: profileReducer,
     items: itemReducer,
     updateUser: updateUserReducer,
-    cart: addToCartSlice,
     userDetails: userDetailsSlice,
     follow: followReducer,
+    cart: cartReducer,
   },
 });

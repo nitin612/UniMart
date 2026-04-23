@@ -11,9 +11,11 @@ import MyListingPreviewScreen from '../Screens/mainScreens/MyListingPreviewScree
 import UserDetailScreen from '../Screens/mainScreens/UserDetailScreen';
 import SellerProductDetailScreen from '../Screens/mainScreens/SellerProductDetailScreen';
 import LikedItems from '../Screens/mainScreens/ProfileScreens/LikedItems';
+import EditProductScreen from "../Screens/mainScreens/EditProductScreen";
+
+const Stack = createNativeStackNavigator();
 
 const MainStack = () => {
-  const Stack = createNativeStackNavigator();
   return (
     <Stack.Navigator
       screenOptions={{
@@ -51,6 +53,7 @@ const MainStack = () => {
         component={SellerProductDetailScreen}
       />
       <Stack.Screen name="LikedItems" component={LikedItems} />
+      <Stack.Screen name="EditProductScreen" component={EditProductScreen} />
     </Stack.Navigator>
   );
 };

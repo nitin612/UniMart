@@ -102,3 +102,39 @@ export const getFollowing = createAsyncThunk(
     }
   },
 );
+export const getCart = createAsyncThunk(
+  'cart/userCart',
+  async (_, thunkAPI) => {
+    try {
+      const response = await API.get(`/api/cart`);
+      console.log('Cart API response====>', response.data);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  },
+);
+export const deleteCartItem = createAsyncThunk(
+  'cart/deleteCartItem',
+  async (itemId, thunkAPI) => {
+    try {
+      const response = await API.delete(`/api/cart/${itemId}`);
+      console.log('item removed from Cart API response====>', response.data);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  },
+);
+export const clearUserCart = createAsyncThunk(
+  'cart/clearUserCart',
+  async (_, thunkAPI) => {
+    try {
+      const response = await API.delete(`/api/cart`);
+      console.log('All Cart removed  API response====>', response.data);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  },
+);

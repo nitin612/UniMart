@@ -21,6 +21,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import API from '../../api/Api';
 import { useSelector, useDispatch } from 'react-redux';
+import { getCart } from '../../redux/thunkFunctions/thunkFunctions';
 
 const { width } = Dimensions.get('window');
 
@@ -61,6 +62,7 @@ export default function ProductCard({ item }) {
       const response = await API.post(`/api/cart/${itemId}`);
       console.log('AddtoCartResponse response====>', response.data);
       setIsAdded(true);
+      dispatch(getCart());
       return response.data;
     } catch (error) {
       console.log('unable to add in cart', error);

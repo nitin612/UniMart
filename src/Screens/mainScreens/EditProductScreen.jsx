@@ -12,6 +12,7 @@ import {
   StatusBar,
   KeyboardAvoidingView,
   Platform,
+  Switch,
 } from 'react-native';
 import {
   Camera,
@@ -39,6 +40,7 @@ import {
   fetchUserProfile,
 } from '../../redux/thunkFunctions/thunkFunctions';
 import { useDispatch } from 'react-redux';
+import { isEnabled } from 'react-native/Libraries/Performance/Systrace';
 
 const CATEGORIES = [
   'Electronics',
@@ -56,6 +58,8 @@ const EditProductScreen = () => {
   const route = useRoute();
   const dispatch = useDispatch();
   const { item } = route.params || {};
+  console.log('rtwaegf', item);
+  const id = item?._id;
 
   const [images, setImages] = useState([]);
   const [categoryModalVisible, setCategoryModalVisible] = useState(false);
@@ -66,7 +70,9 @@ const EditProductScreen = () => {
   const [category, setCategory] = useState(item?.category || '');
   const [condition, setCondition] = useState(item?.condition || '');
   const [description, setDescription] = useState(item?.description || '');
+  const [isSold, setIsSold] = useState(item?.isSold || '');
   const [isLoading, setLoading] = useState(false);
+  const toggleSwitch = () => setIsSold(previous => !previous);
 
   useEffect(() => {
     if (item?.imageUrls) {
@@ -80,45 +86,21 @@ const EditProductScreen = () => {
   }, [item]);
 
   const handleUpdate = async () => {
-    if (!title || !price || !category || !description) {
+    if (!title || !price || !category || !description || !condition) {
       Alert.alert('Missing Fields', 'Please fill in all required fields.');
       return;
     }
-    if (images.length === 0) {
-      Alert.alert('Image Required', 'Please add at least one photo.');
-      return;
-    }
-
     setLoading(true);
+    const payload = {
+      title,
+      price,
+      category,
+      description,
+      condition,
+      isSold,
+    };
     try {
-      const formData = new FormData();
-      formData.append('title', title);
-      formData.append('price', Number(price));
-      formData.append('category', category);
-      formData.append('condition', condition);
-      formData.append('description', description);
-
-      const existingImagesToKeep = images
-        .filter(img => img.isExisting)
-        .map(img => img.uri);
-      formData.append('existingImages', JSON.stringify(existingImagesToKeep));
-
-      images.forEach(img => {
-        if (!img.isExisting) {
-          formData.append('images', {
-            uri: img.uri,
-            name: img.fileName || `photo_${Date.now()}.jpg`,
-            type: img.type || 'image/jpeg',
-          });
-        }
-      });
-
-      const response = await API.put(`/api/items/${item._id}`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
-
+      const response = await API.put(`api/items/${id}`, payload);
       if (response.status === 200 || response.status === 201) {
         dispatch(fetchItems());
         dispatch(fetchUserProfile());
@@ -253,6 +235,18 @@ const EditProductScreen = () => {
                 textAlignVertical="top"
                 value={description}
                 onChangeText={setDescription}
+              />
+            </View>
+            <Text style={[styles.label,{fontSize:FONT_SIZES.md}]}>Is this Item Sold ?</Text>
+            <View style={styles.switch}>
+              <Text style={[styles.label,{color:COLORS.PRIMARY_BLACK}]}>{isSold ? 'Yes' : 'No'}</Text>
+
+              <Switch
+                trackColor={{ false: '#ffffff', true: '#ad7b06' }}
+                thumbColor={isSold ? '#ffffff' : '#ffffff'}
+                ios_backgroundColor="#ffffff"
+                onValueChange={toggleSwitch}
+                value={isSold}
               />
             </View>
 
@@ -511,6 +505,12 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     alignItems: 'center',
     marginTop: SPACING.md,
+  },
+  switch: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 20,
   },
   submitBtnText: {
     fontFamily: FONTS.BOLD,

@@ -203,25 +203,31 @@ const ChatConversationScreen = ({ navigation, route }) => {
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
         keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
       >
-        <FlatList
-          ref={flatListRef}
-          data={messages}
-          keyExtractor={item => item.id}
-          renderItem={renderMessage}
-          contentContainerStyle={styles.msgListMinimal}
-          showsVerticalScrollIndicator={false}
-          onContentSizeChange={() =>
-            flatListRef.current?.scrollToEnd({ animated: false })
-          }
-          ListHeaderComponent={
-            <View style={styles.minimalSafety}>
-              <ShieldCheck size={14} color={COLORS.TEXT_MUTED} />
-              <Text style={styles.minimalSafetyText}>
-                Encrypted and secure • Meet in public
-              </Text>
-            </View>
-          }
-        />
+        {isLoading ? (
+          <View style={styles.loaderContainer}>
+            <ActivityIndicator size="large" color={COLORS.PRIMARY_DARK1} />
+          </View>
+        ) : (
+          <FlatList
+            ref={flatListRef}
+            data={messages}
+            keyExtractor={item => item.id}
+            renderItem={renderMessage}
+            contentContainerStyle={styles.msgListMinimal}
+            showsVerticalScrollIndicator={false}
+            onContentSizeChange={() =>
+              flatListRef.current?.scrollToEnd({ animated: false })
+            }
+            ListHeaderComponent={
+              <View style={styles.minimalSafety}>
+                <ShieldCheck size={14} color={COLORS.TEXT_MUTED} />
+                <Text style={styles.minimalSafetyText}>
+                  Encrypted and secure • Meet in public
+                </Text>
+              </View>
+            }
+          />
+        )}
 
         <View style={styles.minimalInputArea}>
           <TouchableOpacity style={styles.plusBtn}>
@@ -394,5 +400,10 @@ const styles = StyleSheet.create({
   },
   minimalSendBtn: {
     padding: 10,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

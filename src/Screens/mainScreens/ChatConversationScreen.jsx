@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,9 +10,16 @@ import {
   Platform,
   Image,
   StatusBar,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { ArrowLeft, Send, Plus, MoreHorizontal, ShieldCheck } from 'lucide-react-native';
+import {
+  ArrowLeft,
+  Send,
+  Plus,
+  MoreHorizontal,
+  ShieldCheck,
+} from 'lucide-react-native';
 import {
   COLORS,
   FONTS,
@@ -20,36 +27,97 @@ import {
   RADIUS,
   SPACING,
 } from '../../Constants/theme';
+import { io, Socket } from 'socket.io-client';
+import API from '../../api/Api';
+import { useSelector } from 'react-redux';
 
 const ChatConversationScreen = ({ navigation, route }) => {
-  const { userName, userAvatar } = route?.params || {};
+  const { sellerId, tittle, itemId, image } = route?.params || {};
   const flatListRef = useRef();
 
-  const [messages, setMessages] = useState([
-    { id: '1', text: 'Hey! I saw your post for the Jordan shoes.', sender: 'me', time: '10:30 AM' },
-    { id: '2', text: 'Yes, they are still available!', sender: 'seller', time: '10:31 AM' },
-    { id: '3', text: 'Great! Can we meet at the Student Union building tomorrow?', sender: 'me', time: '10:32 AM' },
-    { id: '4', text: 'Sure, 2 PM works for me. Does that work for you?', sender: 'seller', time: '10:35 AM' },
-  ]);
-
+  const [messages, setMessages] = useState([]);
+  const [chatId, setChatId] = useState('');
   const [input, setInput] = useState('');
+  const { data } = useSelector(state => state.profile);
+  const currentUserID = data?._id;
+  const [isLoading ,setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const run = async () => {
+      try {
+        setIsLoading(true);
+        const res = await API.post('api/chats', {
+          userId: sellerId,
+          itemId: itemId,
+        });
+        setChatId(res?.data?._id);
+
+        const messgaeRes = await API.get(
+          `api/chats/${res?.data?._id}/messages`,
+        );
+        setMessages(messgaeRes?.data);
+        Socket.current = io('https://my-uni-mart.onrender.com');
+
+        Socket.current.emit('join_chat', res.data._id);
+
+        Socket.current.on('receive_message', newMessage => {
+          setMessages(prev => [...prev, newMessage]);
+        });
+
+        console.log(messgaeRes, 'kjhgjfhg');
+      } catch (err) {
+        console.log('errrrrrrrrr', err);
+      }finally{
+        setIsLoading(false);
+      }
+    };
+    run();
+
+    // Cleanup on unmount
+    return () => {
+      if (Socket.current) Socket.current.disconnect();
+    };
+  }, []);
+
+  // const sendMessage = () => {
+  //   if (input.trim() === '') return;
+
+  //    const newMessage = {
+  //     id: Date.now().toString(),
+  //     text: input,
+  //     sender: 'me',
+  //     time: new Date().toLocaleTimeString([], {
+  //       hour: '2-digit',
+  //       minute: '2-digit',
+  //     }),
+  //   };
+
+  //   setMessages(prev => [...prev, newMessage]);
+  //   setInput('');
+
+  //   setTimeout(() => {
+  //     flatListRef.current?.scrollToEnd({ animated: true });
+  //   }, 100);
+  // };
 
   const sendMessage = () => {
-    if (input.trim() === '') return;
+    if (input.trim() && chatId) {
+      const messageData = {
+        chatId: chatId,
+        senderId: currentUserID,
+        content: input,
+      };
 
-    const newMessage = {
-      id: Date.now().toString(),
-      text: input,
-      sender: 'me',
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-    };
-
-    setMessages(prev => [...prev, newMessage]);
-    setInput('');
-    
-    setTimeout(() => {
-        flatListRef.current?.scrollToEnd({ animated: true });
-    }, 100);
+      Socket.current.emit('send_message', messageData);
+      setInput('');
+    }
+  };
+  const currentUserId = currentUserID;
+  const formatTime = date => {
+    return new Date(date).toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+    });
   };
 
   const renderHeader = () => (
@@ -64,12 +132,16 @@ const ChatConversationScreen = ({ navigation, route }) => {
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.userProfile} activeOpacity={0.7}>
-            <Image 
-              source={{ uri: userAvatar || 'https://i.pravatar.cc/150?u=unknown' }} 
-              style={styles.tinyAvatar} 
+            <Image
+              source={{
+                uri:
+                  image ||
+                  'https://images.unsplash.com/photo-1773332611522-06b86b48cbf1?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+              }}
+              style={styles.tinyAvatar}
             />
             <View style={styles.userMeta}>
-              <Text style={styles.userNameText}>{userName || 'Seller'}</Text>
+              <Text style={styles.userNameText}>{tittle || 'Seller'}</Text>
               <Text style={styles.statusText}>Active now</Text>
             </View>
           </TouchableOpacity>
@@ -83,22 +155,41 @@ const ChatConversationScreen = ({ navigation, route }) => {
   );
 
   const renderMessage = ({ item }) => {
-    const isMe = item.sender === 'me';
+    const isMe = item.sender._id === currentUserId;
 
     return (
-      <View style={[styles.msgWrapper, isMe ? styles.myMsgWrapper : styles.theirMsgWrapper]}>
-        <View style={[
-          styles.msgBubble,
-          isMe ? styles.myBubbleMinimal : styles.theirBubbleMinimal
-        ]}>
-          <Text style={[styles.msgText, isMe ? styles.myMsgText : styles.theirMsgText]}>
-            {item.text}
+      <View
+        style={[
+          styles.msgWrapper,
+          isMe ? styles.myMsgWrapper : styles.theirMsgWrapper,
+        ]}
+      >
+        <View
+          style={[
+            styles.msgBubble,
+            isMe ? styles.myBubbleMinimal : styles.theirBubbleMinimal,
+          ]}
+        >
+          <Text
+            style={[
+              styles.msgText,
+              isMe ? styles.myMsgText : styles.theirMsgText,
+            ]}
+          >
+            {item.content}
           </Text>
-          <Text style={[styles.msgTime, isMe ? styles.myMsgTime : styles.theirMsgTime]}>
-            {item.time}
+
+          <Text
+            style={[
+              styles.msgTime,
+              isMe ? styles.myMsgTime : styles.theirMsgTime,
+            ]}
+          >
+            {formatTime(item.createdAt)}
           </Text>
         </View>
       </View>
+    
     );
   };
 
@@ -115,15 +206,19 @@ const ChatConversationScreen = ({ navigation, route }) => {
         <FlatList
           ref={flatListRef}
           data={messages}
-          keyExtractor={(item) => item.id}
+          keyExtractor={item => item.id}
           renderItem={renderMessage}
           contentContainerStyle={styles.msgListMinimal}
           showsVerticalScrollIndicator={false}
-          onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: false })}
+          onContentSizeChange={() =>
+            flatListRef.current?.scrollToEnd({ animated: false })
+          }
           ListHeaderComponent={
             <View style={styles.minimalSafety}>
-               <ShieldCheck size={14} color={COLORS.TEXT_MUTED} />
-               <Text style={styles.minimalSafetyText}>Encrypted and secure • Meet in public</Text>
+              <ShieldCheck size={14} color={COLORS.TEXT_MUTED} />
+              <Text style={styles.minimalSafetyText}>
+                Encrypted and secure • Meet in public
+              </Text>
             </View>
           }
         />
@@ -132,7 +227,7 @@ const ChatConversationScreen = ({ navigation, route }) => {
           <TouchableOpacity style={styles.plusBtn}>
             <Plus size={22} color={COLORS.TEXT_SECONDARY} />
           </TouchableOpacity>
-          
+
           <View style={styles.inputFieldBox}>
             <TextInput
               value={input}
@@ -145,7 +240,10 @@ const ChatConversationScreen = ({ navigation, route }) => {
           </View>
 
           {input.trim().length > 0 && (
-            <TouchableOpacity onPress={sendMessage} style={styles.minimalSendBtn}>
+            <TouchableOpacity
+              onPress={sendMessage}
+              style={styles.minimalSendBtn}
+            >
               <Send size={20} color={COLORS.PRIMARY_DARK1} />
             </TouchableOpacity>
           )}

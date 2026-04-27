@@ -13,7 +13,6 @@ import { useNavigation } from '@react-navigation/native';
 
 const CartItemCard = ({ itemData, onDelete, onBuy, onUpdateQuantity }) => {
   const { item, quantity, _id } = itemData;
-  console.log('hkgjf', item);
   if (!item) return null;
 
   const navigation = useNavigation();
@@ -21,9 +20,7 @@ const CartItemCard = ({ itemData, onDelete, onBuy, onUpdateQuantity }) => {
   return (
     <TouchableOpacity
       style={styles.card}
-      onPress={() =>
-        navigation.navigate('SellerProductDetailScreen', { item })
-      }
+      onPress={() => navigation.navigate('SellerProductDetailScreen', { item })}
     >
       <View style={styles.imageContainer}>
         <Image source={{ uri: item.imageUrls?.[0] }} style={styles.image} />
@@ -83,7 +80,9 @@ const CartItemCard = ({ itemData, onDelete, onBuy, onUpdateQuantity }) => {
         <View style={styles.actionRow}>
           <TouchableOpacity
             style={styles.buyBtn}
-            onPress={() => onBuy(item.seller)}
+            onPress={() =>
+              onBuy(item.seller, item.title, item._id, item?.imageUrls[0])
+            }
             activeOpacity={0.8}
           >
             <ShoppingCart

@@ -21,6 +21,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   fetchUserProfile,
   fetchItems,
+  getChats,
 } from '../../redux/thunkFunctions/thunkFunctions';
 import { useDispatch, useSelector } from 'react-redux';
 import CustomLoader from '../../common/CustomLoader';
@@ -39,6 +40,7 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     dispatch(fetchUserProfile());
     dispatch(fetchItems());
+    dispatch(getChats());
   }, []);
 
   const filterData = (dataSaab || []).filter(item => {

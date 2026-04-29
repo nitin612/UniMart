@@ -138,3 +138,16 @@ export const clearUserCart = createAsyncThunk(
     }
   },
 );
+
+export const getChats = createAsyncThunk(
+  'chats/userChats',
+  async (_, thunkAPI) => {
+    try {
+      const response = await API.get(`/api/chats`);
+      console.log('Chat API response====>', response.data);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  },
+);

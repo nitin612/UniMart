@@ -10,7 +10,12 @@ import {
   TextInput,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Search, MessageSquare, Edit3, ChevronRight } from 'lucide-react-native';
+import {
+  Search,
+  MessageSquare,
+  Edit3,
+  ChevronRight,
+} from 'lucide-react-native';
 import {
   COLORS,
   FONTS,
@@ -19,54 +24,57 @@ import {
   SPACING,
   SHADOW,
 } from '../../Constants/theme';
+import { useSelector } from 'react-redux';
 
 const ChatScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
+  const { data, loading, error } = useSelector(state => state.chat);
+  const users = data;
 
-  const users = [
-    {
-      id: '1',
-      name: 'John Doe',
-      lastMessage: 'Hey, is this still available for pick up?',
-      time: '10:30 AM',
-      avatar: 'https://i.pravatar.cc/150?u=1',
-      unread: 2,
-    },
-    {
-      id: '2',
-      name: 'Sarah Smith',
-      lastMessage: 'Thanks! I will meet you at the library.',
-      time: 'Yesterday',
-      avatar: 'https://i.pravatar.cc/150?u=2',
-      unread: 0,
-    },
-    {
-      id: '3',
-      name: 'Mike Johnson',
-      lastMessage: 'I will buy it. Is ₹500 okay?',
-      time: '2 days ago',
-      avatar: 'https://i.pravatar.cc/150?u=3',
-      unread: 0,
-    },
-    {
-      id: '4',
-      name: 'Amit Kumar',
-      lastMessage: 'Can you share more photos of the item?',
-      time: '3 days ago',
-      avatar: 'https://i.pravatar.cc/150?u=4',
-      unread: 1,
-    },
-  ];
+  // const users = [
+  //   {
+  //     id: '1',
+  //     name: 'John Doe',
+  //     lastMessage: 'Hey, is this still available for pick up?',
+  //     time: '10:30 AM',
+  //     avatar: 'https://i.pravatar.cc/150?u=1',
+  //     unread: 2,
+  //   },
+  //   {
+  //     id: '2',
+  //     name: 'Sarah Smith',
+  //     lastMessage: 'Thanks! I will meet you at the library.',
+  //     time: 'Yesterday',
+  //     avatar: 'https://i.pravatar.cc/150?u=2',
+  //     unread: 0,
+  //   },
+  //   {
+  //     id: '3',
+  //     name: 'Mike Johnson',
+  //     lastMessage: 'I will buy it. Is ₹500 okay?',
+  //     time: '2 days ago',
+  //     avatar: 'https://i.pravatar.cc/150?u=3',
+  //     unread: 0,
+  //   },
+  //   {
+  //     id: '4',
+  //     name: 'Amit Kumar',
+  //     lastMessage: 'Can you share more photos of the item?',
+  //     time: '3 days ago',
+  //     avatar: 'https://i.pravatar.cc/150?u=4',
+  //     unread: 1,
+  //   },
+  // ];
 
-  const filteredUsers = users.filter(user => 
-    user.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredUsers = users.filter(user =>
+    user?.item?.title.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
-  const openChat = (user) => {
+  const openChat = user => {
     navigation.navigate('ChatConversationScreen', {
-      sellerId: user.id,
-      userName: user.name,
-      userAvatar: user.avatar,
+      sellerId: user.participants[1]?._id,
+      tittle:user.item?.title,
+      userName: user?.otherParticipant?.name,
     });
   };
 
@@ -103,22 +111,36 @@ const ChatScreen = ({ navigation }) => {
       onPress={() => openChat(item)}
     >
       <View style={styles.avatarContainer}>
-        <Image source={{ uri: item.avatar }} style={styles.minimalAvatar} />
+        <Image source={{ uri: item.otherParticipant?.avatar || "https://static.vecteezy.com/system/resources/thumbnails/005/544/718/small/profile-icon-design-free-vector.jpg" }} style={styles.minimalAvatar} />
         {item.unread > 0 && <View style={styles.unreadDot} />}
       </View>
 
       <View style={styles.minimalChatInfo}>
         <View style={styles.cardHeader}>
           <Text style={styles.minimalUserName} numberOfLines={1}>
-            {item.name}
+            {item.otherParticipant?.name}
           </Text>
-          <Text style={[styles.minimalTime, item.unread > 0 && { color: COLORS.PRIMARY_DARK1, fontFamily: FONTS.BOLD }]}>
-            {item.time}
+          <Text
+            style={[
+              styles.minimalTime,
+              item.unread > 0 && {
+                color: COLORS.PRIMARY_DARK1,
+                fontFamily: FONTS.BOLD,
+              },
+            ]}
+          >
+         {new Date(item?.createdAt).toLocaleDateString("en-GB")}
           </Text>
         </View>
 
         <View style={styles.cardFooter}>
-          <Text style={[styles.minimalLastMessage, item.unread > 0 && styles.boldMessage]} numberOfLines={1}>
+          <Text
+            style={[
+              styles.minimalLastMessage,
+              item.unread > 0 && styles.boldMessage,
+            ]}
+            numberOfLines={1}
+          >
             {item.lastMessage}
           </Text>
           {item.unread > 0 && (
@@ -138,7 +160,7 @@ const ChatScreen = ({ navigation }) => {
 
       <FlatList
         data={filteredUsers}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item,index) => index.toString()}
         renderItem={renderItem}
         contentContainerStyle={styles.minimalList}
         showsVerticalScrollIndicator={false}

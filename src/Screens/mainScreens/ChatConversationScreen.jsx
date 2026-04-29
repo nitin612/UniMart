@@ -29,10 +29,11 @@ import {
 } from '../../Constants/theme';
 import { io, Socket } from 'socket.io-client';
 import API from '../../api/Api';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getChats } from '../../redux/thunkFunctions/thunkFunctions';
 
 const ChatConversationScreen = ({ navigation, route }) => {
-  const { sellerId, tittle, itemId, image } = route?.params || {};
+  const { sellerId, tittle, userName, itemId, image } = route?.params || {};
   const flatListRef = useRef();
 
   const [messages, setMessages] = useState([]);
@@ -40,7 +41,8 @@ const ChatConversationScreen = ({ navigation, route }) => {
   const [input, setInput] = useState('');
   const { data } = useSelector(state => state.profile);
   const currentUserID = data?._id;
-  const [isLoading ,setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const run = async () => {
@@ -56,6 +58,8 @@ const ChatConversationScreen = ({ navigation, route }) => {
           `api/chats/${res?.data?._id}/messages`,
         );
         setMessages(messgaeRes?.data);
+
+        dispatch(getChats());
         Socket.current = io('https://my-uni-mart.onrender.com');
 
         Socket.current.emit('join_chat', res.data._id);
@@ -63,11 +67,9 @@ const ChatConversationScreen = ({ navigation, route }) => {
         Socket.current.on('receive_message', newMessage => {
           setMessages(prev => [...prev, newMessage]);
         });
-
-        console.log(messgaeRes, 'kjhgjfhg');
       } catch (err) {
         console.log('errrrrrrrrr', err);
-      }finally{
+      } finally {
         setIsLoading(false);
       }
     };
@@ -78,27 +80,6 @@ const ChatConversationScreen = ({ navigation, route }) => {
       if (Socket.current) Socket.current.disconnect();
     };
   }, []);
-
-  // const sendMessage = () => {
-  //   if (input.trim() === '') return;
-
-  //    const newMessage = {
-  //     id: Date.now().toString(),
-  //     text: input,
-  //     sender: 'me',
-  //     time: new Date().toLocaleTimeString([], {
-  //       hour: '2-digit',
-  //       minute: '2-digit',
-  //     }),
-  //   };
-
-  //   setMessages(prev => [...prev, newMessage]);
-  //   setInput('');
-
-  //   setTimeout(() => {
-  //     flatListRef.current?.scrollToEnd({ animated: true });
-  //   }, 100);
-  // };
 
   const sendMessage = () => {
     if (input.trim() && chatId) {
@@ -136,13 +117,13 @@ const ChatConversationScreen = ({ navigation, route }) => {
               source={{
                 uri:
                   image ||
-                  'https://images.unsplash.com/photo-1773332611522-06b86b48cbf1?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                  'https://static.vecteezy.com/system/resources/thumbnails/005/544/718/small/profile-icon-design-free-vector.jpg',
               }}
               style={styles.tinyAvatar}
             />
             <View style={styles.userMeta}>
               <Text style={styles.userNameText}>{tittle || 'Seller'}</Text>
-              <Text style={styles.statusText}>Active now</Text>
+              <Text style={styles.statusText}>{userName || 'Active Now'}</Text>
             </View>
           </TouchableOpacity>
 
@@ -189,7 +170,6 @@ const ChatConversationScreen = ({ navigation, route }) => {
           </Text>
         </View>
       </View>
-    
     );
   };
 
@@ -211,7 +191,7 @@ const ChatConversationScreen = ({ navigation, route }) => {
           <FlatList
             ref={flatListRef}
             data={messages}
-            keyExtractor={item => item.id}
+            keyExtractor={(item,index) => index.toString()}
             renderItem={renderMessage}
             contentContainerStyle={styles.msgListMinimal}
             showsVerticalScrollIndicator={false}

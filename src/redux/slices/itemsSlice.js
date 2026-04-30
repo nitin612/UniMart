@@ -18,7 +18,15 @@ export const itemSlice = createSlice({
       })
       .addCase(fetchItems.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload;
+        const isNextPage = action.meta.arg > 1;
+        if (isNextPage) {
+          state.data = {
+            ...action.payload,
+            items: [...(state.data?.items || []), ...action.payload.items],
+          };
+        } else {
+          state.data = action.payload;
+        }
       })
       .addCase(fetchItems.rejected, (state, action) => {
         state.loading = false;

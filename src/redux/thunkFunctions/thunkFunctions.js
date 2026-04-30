@@ -16,9 +16,9 @@ export const fetchUserProfile = createAsyncThunk(
 
 export const fetchItems = createAsyncThunk(
   'items/fetchItems',
-  async (_, thunkAPI) => {
+  async (page = 1, thunkAPI) => {
     try {
-      const response = await API.get('/api/items');
+      const response = await API.get(`/api/items?page=${page}&limit=10`);
       console.log('Items====>', response.data);
       return response.data;
     } catch (error) {

@@ -31,41 +31,7 @@ const ChatScreen = ({ navigation }) => {
   const { data, loading, error } = useSelector(state => state.chat);
   const users = data;
 
-  // const users = [
-  //   {
-  //     id: '1',
-  //     name: 'John Doe',
-  //     lastMessage: 'Hey, is this still available for pick up?',
-  //     time: '10:30 AM',
-  //     avatar: 'https://i.pravatar.cc/150?u=1',
-  //     unread: 2,
-  //   },
-  //   {
-  //     id: '2',
-  //     name: 'Sarah Smith',
-  //     lastMessage: 'Thanks! I will meet you at the library.',
-  //     time: 'Yesterday',
-  //     avatar: 'https://i.pravatar.cc/150?u=2',
-  //     unread: 0,
-  //   },
-  //   {
-  //     id: '3',
-  //     name: 'Mike Johnson',
-  //     lastMessage: 'I will buy it. Is ₹500 okay?',
-  //     time: '2 days ago',
-  //     avatar: 'https://i.pravatar.cc/150?u=3',
-  //     unread: 0,
-  //   },
-  //   {
-  //     id: '4',
-  //     name: 'Amit Kumar',
-  //     lastMessage: 'Can you share more photos of the item?',
-  //     time: '3 days ago',
-  //     avatar: 'https://i.pravatar.cc/150?u=4',
-  //     unread: 1,
-  //   },
-  // ];
-
+  
   const filteredUsers = users.filter(user =>
     user?.item?.title.toLowerCase().includes(searchQuery.toLowerCase()),
   );

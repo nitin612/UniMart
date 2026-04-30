@@ -37,17 +37,31 @@ const HomeScreen = ({ navigation }) => {
   const dataSaab = data?.items;
   const userName = userData?.name;
 
+  const [page, setPage] = useState(1);
+
   useEffect(() => {
     dispatch(fetchUserProfile());
-    dispatch(fetchItems());
+    dispatch(fetchItems(1));
     dispatch(getChats());
   }, []);
+
+  const handleLoadMore = () => {
+    if (!loading && data?.page < data?.totalPages) {
+      const nextPage = page + 1;
+      setPage(nextPage);
+      dispatch(fetchItems(nextPage));
+    }
+  };
 
   const filterData = (dataSaab || []).filter(item => {
     const matchesCategory =
       selectedFilter === 'All' ||
       selectedFilter.toLowerCase() === item.category.toLowerCase();
-    return matchesCategory;
+
+    const searchItem = item?.title?.toLowerCase()?.includes(search?.toLowerCase()) ||
+    item.category?.toLowerCase()?.includes(search?.toLowerCase());
+
+    return matchesCategory && searchItem
   });
 
   const renderHeader = () => (
@@ -90,14 +104,23 @@ const HomeScreen = ({ navigation }) => {
         showsVerticalScrollIndicator={false}
         ListHeaderComponent={renderHeader}
         contentContainerStyle={styles.listContent}
+        onEndReached={handleLoadMore}
+        onEndReachedThreshold={0.5}
         ListEmptyComponent={
-          loading ? (
+          loading && page === 1 ? (
             <View style={styles.loaderContainer}>
               <CustomLoader />
             </View>
           ) : (
             <Text style={styles.emptyText}>No items found</Text>
           )
+        }
+        ListFooterComponent={
+          loading && page > 1 ? (
+            <View style={{ paddingVertical: 20 }}>
+              <CustomLoader />
+            </View>
+          ) : null
         }
       />
     </SafeAreaView>

@@ -58,7 +58,9 @@ const LoginScreen = () => {
     } catch (error) {
       setError(error.message);
     }finally{
-      setIsLoading(false)
+      setIsLoading(false
+        
+      )
     }
   };
 

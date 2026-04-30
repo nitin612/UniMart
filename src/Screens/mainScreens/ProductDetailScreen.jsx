@@ -19,7 +19,7 @@ import {
 } from '../../Constants/theme';
 import { useNavigation } from '@react-navigation/native';
 import API from '../../api/Api';
-import { useDispatch , useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchItems } from '../../redux/thunkFunctions/thunkFunctions';
 
 const ProductDetailScreen = ({ route }) => {
@@ -27,7 +27,15 @@ const ProductDetailScreen = ({ route }) => {
   const navigation = useNavigation();
   const { item } = route?.params;
   const dispatch = useDispatch();
-  const [isLiked, setIsLiked] = useState(userData?.likedItems.includes(item._id));
+  const [isLiked, setIsLiked] = useState(
+    userData?.likedItems.includes(item._id),
+  );
+
+  const sellerId = item?.seller?._id;
+  const tittle = item?.title;
+  const userName = item?.seller?.name;
+  const itemId = item?._id;
+  const image = item?.seller?.avatar;
 
   const likeProduct = async itemId => {
     const newlikedItem = !isLiked;
@@ -187,7 +195,18 @@ const ProductDetailScreen = ({ route }) => {
       </ScrollView>
       {/* {Absolute Button} */}
       <View style={styles.wrapper}>
-        <TouchableOpacity style={styles.messageBtn}>
+        <TouchableOpacity
+          style={styles.messageBtn}
+          onPress={() =>
+            navigation.navigate('ChatConversationScreen', {
+              sellerId,
+              tittle,
+              userName,
+              image,
+              itemId,
+            })
+          }
+        >
           <Text style={styles.messageText}>Message to a Seller</Text>
           <MessageCircleDashed
             size={18}

@@ -33,11 +33,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getChats } from '../../redux/thunkFunctions/thunkFunctions';
 
 const ChatConversationScreen = ({ navigation, route }) => {
-  const { sellerId, tittle, userName, itemId, image } = route?.params || {};
+  const {
+    sellerId,
+    title,
+    userName,
+    itemId,
+    image,
+    chatId: initialChatId,
+  } = route?.params || {};
   const flatListRef = useRef();
 
   const [messages, setMessages] = useState([]);
-  const [chatId, setChatId] = useState('');
+  const [chatId, setChatId] = useState(initialChatId || '');
   const [input, setInput] = useState('');
   const { data } = useSelector(state => state.profile);
   const currentUserID = data?._id;
@@ -122,8 +129,10 @@ const ChatConversationScreen = ({ navigation, route }) => {
               style={styles.tinyAvatar}
             />
             <View style={styles.userMeta}>
-              <Text style={styles.userNameText}>{tittle || 'Seller'}</Text>
-              <Text style={styles.statusText}>{userName || 'Active Now'}</Text>
+              <Text style={styles.userNameText}>{title || 'Seller'}</Text>
+              <Text style={styles.statusText}>
+                {'Seller: ' + userName || 'Active Now'}
+              </Text>
             </View>
           </TouchableOpacity>
 
@@ -191,7 +200,7 @@ const ChatConversationScreen = ({ navigation, route }) => {
           <FlatList
             ref={flatListRef}
             data={messages}
-            keyExtractor={(item,index) => index.toString()}
+            keyExtractor={(item, index) => index.toString()}
             renderItem={renderMessage}
             contentContainerStyle={styles.msgListMinimal}
             showsVerticalScrollIndicator={false}

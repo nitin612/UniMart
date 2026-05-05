@@ -20,31 +20,25 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import API from '../../api/Api';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchItems } from '../../redux/thunkFunctions/thunkFunctions';
+import { fetchItems, toggleLikeItem } from '../../redux/thunkFunctions/thunkFunctions';
 
 const ProductDetailScreen = ({ route }) => {
   const { data: userData } = useSelector(state => state.profile);
   const navigation = useNavigation();
   const { item } = route?.params;
   const dispatch = useDispatch();
-  const [isLiked, setIsLiked] = useState(
-    userData?.likedItems.includes(item._id),
-  );
+  const isLiked = userData?.likedItems?.includes(item._id);
 
   const sellerId = item?.seller?._id;
-  const tittle = item?.title;
+  const title = item?.title;
   const userName = item?.seller?.name;
   const itemId = item?._id;
   const image = item?.seller?.avatar;
 
   const likeProduct = async itemId => {
-    const newlikedItem = !isLiked;
-    setIsLiked(newlikedItem);
     try {
-      const response = await API.post(`api/likes/${itemId}`);
-      return response;
+      dispatch(toggleLikeItem(itemId));
     } catch (err) {
-      setIsLiked(!newlikedItem);
       console.warn('Error occurred while liking the product', err);
     }
   };
@@ -200,7 +194,7 @@ const ProductDetailScreen = ({ route }) => {
           onPress={() =>
             navigation.navigate('ChatConversationScreen', {
               sellerId,
-              tittle,
+              title,
               userName,
               image,
               itemId,

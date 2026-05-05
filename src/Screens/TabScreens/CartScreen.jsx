@@ -62,13 +62,14 @@ const CartScreen = ({ navigation }) => {
     });
   };
 
-  const handleBuyItem = (sellerId, tittle, itemId, image) => {
-    console.log('message seller:', sellerId, tittle, itemId);
+  const handleBuyItem = (sellerId, title, itemId, image, userName) => {
+    console.log('message seller:', sellerId, title, itemId);
     navigation.navigate('ChatConversationScreen', {
       sellerId,
-      tittle,
+      title,
       itemId,
       image,
+      userName,
     });
   };
 

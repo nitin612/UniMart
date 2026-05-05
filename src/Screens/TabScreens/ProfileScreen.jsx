@@ -130,13 +130,13 @@ const ProfileScreen = () => {
               navigation.navigate('MyListingsScreen', { listingsData })
             }
           />
-          <ProfileOptionsListing
+          {/* <ProfileOptionsListing
             backgroundColor={COLORS.GREEN_T}
             logo={BadgeIndianRupee}
             name={'Sold Items'}
             icon={ChevronRight}
             iconColor={COLORS.green}
-          />
+          /> */}
           <ProfileOptionsListing
             backgroundColor={COLORS.PURPLE_T}
             logo={Heart}

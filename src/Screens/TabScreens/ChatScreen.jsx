@@ -31,16 +31,18 @@ const ChatScreen = ({ navigation }) => {
   const { data, loading, error } = useSelector(state => state.chat);
   const users = data;
 
-  
   const filteredUsers = users.filter(user =>
     user?.item?.title.toLowerCase().includes(searchQuery.toLowerCase()),
   );
 
   const openChat = user => {
     navigation.navigate('ChatConversationScreen', {
-      sellerId: user.participants[1]?._id,
-      tittle:user.item?.title,
+      sellerId: user?.otherParticipant?._id,
+      title: user.item?.title,
       userName: user?.otherParticipant?.name,
+      itemId: user?.item?._id,
+      chatId: user?._id,
+      image: user?.otherParticipant?.avatar,
     });
   };
 
@@ -49,9 +51,9 @@ const ChatScreen = ({ navigation }) => {
       <SafeAreaView edges={['top']}>
         <View style={styles.headerRow}>
           <Text style={styles.minimalTitle}>Messages</Text>
-          <TouchableOpacity style={styles.iconCircle}>
+          {/* <TouchableOpacity style={styles.iconCircle}>
             <Edit3 size={20} color={COLORS.TEXT_PRIMARY} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
 
         <View style={styles.minimalSearchContainer}>
@@ -77,14 +79,21 @@ const ChatScreen = ({ navigation }) => {
       onPress={() => openChat(item)}
     >
       <View style={styles.avatarContainer}>
-        <Image source={{ uri: item.otherParticipant?.avatar || "https://static.vecteezy.com/system/resources/thumbnails/005/544/718/small/profile-icon-design-free-vector.jpg" }} style={styles.minimalAvatar} />
+        <Image
+          source={{
+            uri:
+              item.itemImage ||
+              'https://static.vecteezy.com/system/resources/thumbnails/005/544/718/small/profile-icon-design-free-vector.jpg',
+          }}
+          style={styles.minimalAvatar}
+        />
         {item.unread > 0 && <View style={styles.unreadDot} />}
       </View>
 
       <View style={styles.minimalChatInfo}>
         <View style={styles.cardHeader}>
           <Text style={styles.minimalUserName} numberOfLines={1}>
-            {item.otherParticipant?.name}
+            {item.item?.title}
           </Text>
           <Text
             style={[
@@ -95,7 +104,7 @@ const ChatScreen = ({ navigation }) => {
               },
             ]}
           >
-         {new Date(item?.createdAt).toLocaleDateString("en-GB")}
+            {new Date(item?.createdAt).toLocaleDateString('en-GB')}
           </Text>
         </View>
 
@@ -126,7 +135,7 @@ const ChatScreen = ({ navigation }) => {
 
       <FlatList
         data={filteredUsers}
-        keyExtractor={(item,index) => index.toString()}
+        keyExtractor={(item, index) => index.toString()}
         renderItem={renderItem}
         contentContainerStyle={styles.minimalList}
         showsVerticalScrollIndicator={false}

@@ -81,7 +81,13 @@ const CartItemCard = ({ itemData, onDelete, onBuy, onUpdateQuantity }) => {
           <TouchableOpacity
             style={styles.buyBtn}
             onPress={() =>
-              onBuy(item.seller, item.title, item._id, item?.imageUrls[0])
+              onBuy(
+                item.seller,
+                item.title,
+                item._id,
+                item?.imageUrls[0],
+                item?.seller?.name,
+              )
             }
             activeOpacity={0.8}
           >

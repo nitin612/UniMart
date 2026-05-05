@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchUserProfile } from '../thunkFunctions/thunkFunctions';
+import { fetchUserProfile, toggleLikeItem } from '../thunkFunctions/thunkFunctions';
 
 const initialState = {
   date: [],
@@ -23,6 +23,11 @@ export const profileSlice = createSlice({
       .addCase(fetchUserProfile.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(toggleLikeItem.fulfilled, (state, action) => {
+        if (state.data) {
+          state.data.likedItems = action.payload.likedItems;
+        }
       });
   },
 });

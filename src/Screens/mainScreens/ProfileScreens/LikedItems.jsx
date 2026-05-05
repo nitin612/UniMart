@@ -21,15 +21,25 @@ import { ArrowLeft, Heart } from 'lucide-react-native';
 import { useNavigation } from '@react-navigation/native';
 import ProductCard from '../../../Components/HomeScreenComponents/ProductCard';
 import CustomLoader from '../../../common/CustomLoader';
+import { useSelector } from 'react-redux';
 
 const LikedItems = () => {
   const navigation = useNavigation();
   const [likedItems, setLikedItems] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const { data: userData } = useSelector(state => state.profile);
+  const likedItemIds = userData?.likedItems || [];
 
   useEffect(() => {
     getLiked();
   }, []);
+
+  useEffect(() => {
+    // Sync local list with global liked IDs
+    if (likedItems.length > 0) {
+      setLikedItems(prev => prev.filter(item => likedItemIds.includes(item._id)));
+    }
+  }, [likedItemIds]);
 
   const getLiked = async () => {
     setIsLoading(true);

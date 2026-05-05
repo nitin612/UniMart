@@ -151,3 +151,15 @@ export const getChats = createAsyncThunk(
     }
   },
 );
+export const toggleLikeItem = createAsyncThunk(
+  'items/toggleLike',
+  async (itemId, thunkAPI) => {
+    try {
+      const response = await API.post(`/api/likes/${itemId}`);
+      console.log('toggleLikeItem response====>', response.data);
+      return { itemId, ...response.data };
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  },
+);

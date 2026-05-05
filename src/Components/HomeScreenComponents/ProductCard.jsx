@@ -21,7 +21,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import API from '../../api/Api';
 import { useSelector, useDispatch } from 'react-redux';
-import { getCart } from '../../redux/thunkFunctions/thunkFunctions';
+import { getCart, toggleLikeItem } from '../../redux/thunkFunctions/thunkFunctions';
 
 const { width } = Dimensions.get('window');
 
@@ -30,9 +30,8 @@ const CARD_WIDTH = (width - SPACING.lg * 2 - SPACING.md) / 2;
 export default function ProductCard({ item }) {
   const { data: userData } = useSelector(state => state.profile);
   const navigation = useNavigation();
-  const [isLiked, setIsLiked] = useState(
-    userData?.likedItems.includes(item._id),
-  );
+  const isLiked = userData?.likedItems?.includes(item._id);
+
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
   const [isAdded, setIsAdded] = useState(
@@ -46,13 +45,9 @@ export default function ProductCard({ item }) {
   }, [userData, item._id]);
 
   const likeProduct = async itemId => {
-    const newlikedItem = !isLiked;
-    setIsLiked(newlikedItem);
     try {
-      const response = await API.post(`api/likes/${itemId}`);
-      return response;
+      dispatch(toggleLikeItem(itemId));
     } catch (err) {
-      setIsLiked(!newlikedItem);
       console.warn('Error occurred while liking the product', err);
     }
   };

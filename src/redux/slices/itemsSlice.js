@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchItems } from '../thunkFunctions/thunkFunctions';
+import { fetchItems, toggleLikeItem } from '../thunkFunctions/thunkFunctions';
 
 const initialState = {
   date: [],
@@ -31,6 +31,15 @@ export const itemSlice = createSlice({
       .addCase(fetchItems.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(toggleLikeItem.fulfilled, (state, action) => {
+        if (state.data && state.data.items) {
+          state.data.items = state.data.items.map(item =>
+            item._id === action.payload.itemId
+              ? { ...item, likesCount: action.payload.likesCount }
+              : item,
+          );
+        }
       });
   },
 });

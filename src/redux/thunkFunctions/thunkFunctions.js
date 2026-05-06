@@ -16,9 +16,13 @@ export const fetchUserProfile = createAsyncThunk(
 
 export const fetchItems = createAsyncThunk(
   'items/fetchItems',
-  async (page = 1, thunkAPI) => {
+  async ({ page = 1, search = '', category = 'All' } = {}, thunkAPI) => {
     try {
-      const response = await API.get(`/api/items?page=${page}&limit=10`);
+      let url = `/api/items?page=${page}&limit=10`;
+      if (search) url += `&search=${search}`;
+      if (category && category !== 'All') url += `&category=${category}`;
+      
+      const response = await API.get(url);
       console.log('Items====>', response.data);
       return response.data;
     } catch (error) {
@@ -72,7 +76,7 @@ export const followUser = createAsyncThunk(
     try {
       const response = await API.post(`/api/users/follow/${id}`);
       console.log('follow user API response====>', response.data);
-      return response.data;
+      return { id, ...response.data };
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }

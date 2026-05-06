@@ -20,7 +20,10 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import API from '../../api/Api';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchItems, toggleLikeItem } from '../../redux/thunkFunctions/thunkFunctions';
+import {
+  fetchItems,
+  toggleLikeItem,
+} from '../../redux/thunkFunctions/thunkFunctions';
 
 const ProductDetailScreen = ({ route }) => {
   const { data: userData } = useSelector(state => state.profile);
@@ -138,7 +141,7 @@ const ProductDetailScreen = ({ route }) => {
           />
           <Text style={styles.wishlistBannerText}>
             <Text style={styles.wishlistBannerCount}>{item?.likesCount}</Text>{' '}
-            people wishlisted this
+            people Liked this
           </Text>
         </View>
 

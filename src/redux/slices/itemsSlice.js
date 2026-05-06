@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { fetchItems, toggleLikeItem } from '../thunkFunctions/thunkFunctions';
 
 const initialState = {
-  date: [],
+  data: null,
   loading: false,
   error: null,
 };
@@ -18,7 +18,7 @@ export const itemSlice = createSlice({
       })
       .addCase(fetchItems.fulfilled, (state, action) => {
         state.loading = false;
-        const isNextPage = action.meta.arg > 1;
+        const isNextPage = action.meta.arg?.page > 1;
         if (isNextPage) {
           state.data = {
             ...action.payload,

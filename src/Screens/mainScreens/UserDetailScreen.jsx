@@ -52,9 +52,13 @@ const UserDetailScreen = ({ route }) => {
 
   const { data, loading } = useSelector(state => state.userDetails);
   const userId = data?._id;
-  const [isFollow, setIsFollow] = useState(
-    userData?.following.some(p => p.item === userId),
-  );
+
+  const isFollowedInStore = userData?.following?.includes(userId);
+  const [isFollow, setIsFollow] = useState(isFollowedInStore);
+
+  useEffect(() => {
+    setIsFollow(isFollowedInStore);
+  }, [isFollowedInStore]);
 
   const {
     data: followData,
@@ -65,13 +69,12 @@ const UserDetailScreen = ({ route }) => {
   const handleFollow = () => {
     const newFollow = !isFollow;
     setIsFollow(newFollow);
-    try {
-      dispatch(followUser(userId));
-    } catch (err) {
-      console.warn('error in follow', err);
-    }
-
-    console.log('Follow handled');
+    dispatch(followUser(userId))
+      .unwrap()
+      .catch(err => {
+        setIsFollow(!newFollow); // Revert on error
+        console.warn('error in follow', err);
+      });
   };
 
   const renderListingItem = ({ item }) => (

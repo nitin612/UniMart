@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchUserProfile, toggleLikeItem } from '../thunkFunctions/thunkFunctions';
+import { fetchUserProfile, toggleLikeItem, followUser } from '../thunkFunctions/thunkFunctions';
 
 const initialState = {
-  date: [],
+  data: null,
   loading: false,
   error: null,
 };
@@ -27,6 +27,18 @@ export const profileSlice = createSlice({
       .addCase(toggleLikeItem.fulfilled, (state, action) => {
         if (state.data) {
           state.data.likedItems = action.payload.likedItems;
+        }
+      })
+      .addCase(followUser.fulfilled, (state, action) => {
+        if (state.data && state.data.following) {
+          const { id, isFollowing } = action.payload;
+          if (isFollowing) {
+            if (!state.data.following.includes(id)) {
+              state.data.following.push(id);
+            }
+          } else {
+            state.data.following = state.data.following.filter(fid => fid !== id);
+          }
         }
       });
   },

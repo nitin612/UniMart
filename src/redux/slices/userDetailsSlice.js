@@ -1,8 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchUserDetails } from '../thunkFunctions/thunkFunctions';
+import { fetchUserDetails, followUser } from '../thunkFunctions/thunkFunctions';
 
 const initialState = {
-  date: [],
+  data: null,
   loading: false,
   error: null,
 };
@@ -23,6 +23,12 @@ export const userDetailsSlice = createSlice({
       .addCase(fetchUserDetails.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+      })
+      .addCase(followUser.fulfilled, (state, action) => {
+        if (state.data && state.data._id === action.payload.id) {
+          state.data.isFollowing = action.payload.isFollowing;
+          state.data.followersCount += action.payload.isFollowing ? 1 : -1;
+        }
       });
   },
 });

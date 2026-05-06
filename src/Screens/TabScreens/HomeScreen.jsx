@@ -34,35 +34,33 @@ const HomeScreen = ({ navigation }) => {
   const { data, loading, error } = useSelector(state => state.items);
   const { data: userData } = useSelector(state => state.profile);
 
-  const dataSaab = data?.items;
   const userName = userData?.name;
 
   const [page, setPage] = useState(1);
 
   useEffect(() => {
     dispatch(fetchUserProfile());
-    dispatch(fetchItems(1));
     dispatch(getChats());
   }, []);
 
+  useEffect(() => {
+    setPage(1);
+    const debounceTimer = setTimeout(() => {
+      dispatch(fetchItems({ page: 1, search, category: selectedFilter }));
+    }, 500);
+
+    return () => clearTimeout(debounceTimer);
+  }, [search, selectedFilter]);
+
   const handleLoadMore = () => {
-    if (!loading && data?.page < data?.totalPages) {
+    if (!loading && data?.hasNextPage) {
       const nextPage = page + 1;
       setPage(nextPage);
-      dispatch(fetchItems(nextPage));
+      dispatch(fetchItems({ page: nextPage, search, category: selectedFilter }));
     }
   };
 
-  const filterData = (dataSaab || []).filter(item => {
-    const matchesCategory =
-      selectedFilter === 'All' ||
-      selectedFilter.toLowerCase() === item.category.toLowerCase();
-
-    const searchItem = item?.title?.toLowerCase()?.includes(search?.toLowerCase()) ||
-    item.category?.toLowerCase()?.includes(search?.toLowerCase());
-
-    return matchesCategory && searchItem
-  });
+  const filterData = data?.items || [];
 
   const renderHeader = () => (
     <View style={styles.headerContainer}>

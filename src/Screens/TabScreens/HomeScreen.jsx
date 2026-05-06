@@ -27,6 +27,40 @@ import { useDispatch, useSelector } from 'react-redux';
 import CustomLoader from '../../common/CustomLoader';
 import { useNavigation } from '@react-navigation/native';
 
+const HomeHeader = React.memo(
+  ({
+    userName,
+    loading,
+    search,
+    setSearch,
+    selectedFilter,
+    setSelectedFilter,
+  }) => (
+    <View style={styles.headerContainer}>
+      <View style={styles.topBar}>
+        <View>
+          <Text style={styles.greetingText}>
+            {' '}
+            Hello, {loading ? '...' : userName}!
+          </Text>
+          <Text style={styles.discoverText}>UniMart discover great deals</Text>
+        </View>
+      </View>
+
+      <SearchBar value={search} onChangeText={setSearch} />
+
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>Categories</Text>
+      </View>
+      <FilterChips selected={selectedFilter} onSelect={setSelectedFilter} />
+
+      <View style={styles.sectionHeader}>
+        <Text style={styles.sectionTitle}>Featured For You</Text>
+      </View>
+    </View>
+  ),
+);
+
 const HomeScreen = ({ navigation }) => {
   const [search, setSearch] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('All');
@@ -62,35 +96,6 @@ const HomeScreen = ({ navigation }) => {
 
   const filterData = data?.items || [];
 
-  const renderHeader = () => (
-    <View style={styles.headerContainer}>
-      <View style={styles.topBar}>
-        <View>
-          <Text style={styles.greetingText}>
-            {' '}
-            Hello, {loading ? '...' : userName}!
-          </Text>
-          <Text style={styles.discoverText}>UniMart discover great deals</Text>
-        </View>
-        {/* <TouchableOpacity style={styles.notificationBtn}>
-          <Bell color={COLORS.PRIMARY_DARK1} size={24} />
-          <View style={styles.badge} />
-        </TouchableOpacity> */}
-      </View>
-
-      <SearchBar value={search} onChangeText={setSearch} />
-
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Categories</Text>
-      </View>
-      <FilterChips selected={selectedFilter} onSelect={setSelectedFilter} />
-
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Featured For You</Text>
-      </View>
-    </View>
-  );
-
   return (
     <SafeAreaView style={styles.safeArea}>
       <FlatList
@@ -100,7 +105,16 @@ const HomeScreen = ({ navigation }) => {
         numColumns={2}
         columnWrapperStyle={styles.row}
         showsVerticalScrollIndicator={false}
-        ListHeaderComponent={renderHeader}
+        ListHeaderComponent={
+          <HomeHeader
+            userName={userName}
+            loading={loading}
+            search={search}
+            setSearch={setSearch}
+            selectedFilter={selectedFilter}
+            setSelectedFilter={setSelectedFilter}
+          />
+        }
         contentContainerStyle={styles.listContent}
         onEndReached={handleLoadMore}
         onEndReachedThreshold={0.5}

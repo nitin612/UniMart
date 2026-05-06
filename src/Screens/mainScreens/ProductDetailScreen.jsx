@@ -6,6 +6,7 @@ import {
   View,
   ScrollView,
   Image,
+  ActivityIndicator,
 } from 'react-native';
 import React, { useState } from 'react';
 import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context';
@@ -38,11 +39,15 @@ const ProductDetailScreen = ({ route }) => {
   const itemId = item?._id;
   const image = item?.seller?.avatar;
 
+  const [isLiking, setIsLiking] = useState(false);
   const likeProduct = async itemId => {
     try {
-      dispatch(toggleLikeItem(itemId));
+      setIsLiking(true);
+      await dispatch(toggleLikeItem(itemId)).unwrap();
     } catch (err) {
       console.warn('Error occurred while liking the product', err);
+    } finally {
+      setIsLiking(false);
     }
   };
 
@@ -78,6 +83,7 @@ const ProductDetailScreen = ({ route }) => {
             },
           ]}
           onPress={() => likeProduct(item._id)}
+          disabled={isLiking}
         >
           <View
             style={{
@@ -86,12 +92,16 @@ const ProductDetailScreen = ({ route }) => {
               borderRadius: 30,
             }}
           >
-            <Heart
-              size={26}
-              color={isLiked > 0 ? COLORS.ERROR : COLORS.PRIMARY_BLACK}
-              fill={isLiked > 0 ? COLORS.ERROR : COLORS.ERROR_LIGHT}
-              strokeWidth={2.5}
-            />
+            {isLiking ? (
+              <ActivityIndicator size="small" color={COLORS.PRIMARY_DARK1} />
+            ) : (
+              <Heart
+                size={26}
+                color={isLiked ? COLORS.ERROR : COLORS.PRIMARY_BLACK}
+                fill={isLiked ? COLORS.ERROR : COLORS.ERROR_LIGHT}
+                strokeWidth={2.5}
+              />
+            )}
           </View>
           <Text style={styles.likeIconText}>Like</Text>
         </TouchableOpacity>

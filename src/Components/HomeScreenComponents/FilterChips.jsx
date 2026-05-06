@@ -18,7 +18,7 @@ const OPTIONS = [
   'Other',
 ];
 
-export default function FilterChips({ selected, onSelect }) {
+const FilterChips = React.memo(({ selected, onSelect }) => {
   return (
     <View style={styles.wrapper}>
       <ScrollView
@@ -43,7 +43,9 @@ export default function FilterChips({ selected, onSelect }) {
       </ScrollView>
     </View>
   );
-}
+});
+
+export default FilterChips;
 
 const styles = StyleSheet.create({
   wrapper: {

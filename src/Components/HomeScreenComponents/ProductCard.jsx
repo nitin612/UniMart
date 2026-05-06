@@ -44,11 +44,16 @@ export default function ProductCard({ item }) {
     }
   }, [userData, item._id]);
 
+  const [isLiking, setIsLiking] = useState(false);
+
   const likeProduct = async itemId => {
     try {
-      dispatch(toggleLikeItem(itemId));
+      setIsLiking(true);
+      await dispatch(toggleLikeItem(itemId)).unwrap();
     } catch (err) {
       console.warn('Error occurred while liking the product', err);
+    } finally {
+      setIsLiking(false);
     }
   };
   const addToCartItem = async itemId => {
@@ -85,12 +90,17 @@ export default function ProductCard({ item }) {
         <TouchableOpacity
           style={styles.favoriteBtn}
           onPress={() => likeProduct(item._id)}
+          disabled={isLiking}
         >
-          <Heart
-            fill={isLiked ? COLORS.ERROR : 'transparent'}
-            color={isLiked ? COLORS.ERROR : COLORS.TEXT_PRIMARY}
-            size={18}
-          />
+          {isLiking ? (
+            <ActivityIndicator size="small" color={COLORS.PRIMARY_DARK1} />
+          ) : (
+            <Heart
+              fill={isLiked ? COLORS.ERROR : 'transparent'}
+              color={isLiked ? COLORS.ERROR : COLORS.TEXT_PRIMARY}
+              size={18}
+            />
+          )}
         </TouchableOpacity>
       </View>
 

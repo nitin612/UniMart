@@ -241,7 +241,7 @@ const MyListingsScreen = ({ route }) => {
             </Text>
             <TouchableOpacity
               style={styles.listBtn}
-              onPress={() => navigation.navigate('AddProduct')}
+              onPress={() => navigation.navigate('BottomTabs', { screen: 'AddProduct' })}
             >
               <Text style={styles.listBtnText}>Post a Listing</Text>
             </TouchableOpacity>

@@ -34,15 +34,9 @@ export default function ProductCard({ item }) {
 
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(false);
-  const [isAdded, setIsAdded] = useState(
-    userData?.cart.some(cartItem => cartItem.item === item._id) || false,
-  );
+  const { data: cartData } = useSelector(state => state.cart);
+  const isAdded = cartData?.cart?.some(cartItem => (cartItem.item?._id || cartItem.item) === item._id) || false;
 
-  useEffect(() => {
-    if (userData?.cart.some(cartItem => cartItem.item === item._id)) {
-      setIsAdded(true);
-    }
-  }, [userData, item._id]);
 
   const [isLiking, setIsLiking] = useState(false);
 
@@ -61,7 +55,6 @@ export default function ProductCard({ item }) {
       setIsLoading(true);
       const response = await API.post(`/api/cart/${itemId}`);
       console.log('AddtoCartResponse response====>', response.data);
-      setIsAdded(true);
       dispatch(getCart());
       return response.data;
     } catch (error) {

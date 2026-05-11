@@ -12,6 +12,8 @@ import UserDetailScreen from '../Screens/mainScreens/UserDetailScreen';
 import SellerProductDetailScreen from '../Screens/mainScreens/SellerProductDetailScreen';
 import LikedItems from '../Screens/mainScreens/ProfileScreens/LikedItems';
 import EditProductScreen from "../Screens/mainScreens/EditProductScreen";
+import HelpCenterScreen from '../Screens/mainScreens/HelpCenterScreen';
+
 
 const Stack = createNativeStackNavigator();
 
@@ -54,6 +56,7 @@ const MainStack = () => {
       />
       <Stack.Screen name="LikedItems" component={LikedItems} />
       <Stack.Screen name="EditProductScreen" component={EditProductScreen} />
+      <Stack.Screen name="HelpCenterScreen" component={HelpCenterScreen} />
     </Stack.Navigator>
   );
 };

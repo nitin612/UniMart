@@ -33,6 +33,7 @@ import {
   FONTS,
   SCREEN,
   SPACING,
+  DEFAULT_AVATAR,
 } from '../../Constants/theme';
 import {
   followUser,
@@ -112,7 +113,7 @@ const UserDetailScreen = ({ route }) => {
       <View style={styles.profileSection}>
         <View style={styles.avatarWrapper}>
           <View style={styles.avatarInner}>
-            <Image source={{ uri: data?.avatar }} style={styles.avatar} />
+            <Image source={{ uri: data?.avatar || DEFAULT_AVATAR }} style={styles.avatar} />
           </View>
         </View>
 

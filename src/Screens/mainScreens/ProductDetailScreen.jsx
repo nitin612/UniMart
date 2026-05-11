@@ -17,6 +17,7 @@ import {
   FONTS,
   SCREEN,
   SPACING,
+  DEFAULT_AVATAR,
 } from '../../Constants/theme';
 import { useNavigation } from '@react-navigation/native';
 import API from '../../api/Api';
@@ -181,7 +182,7 @@ const ProductDetailScreen = ({ route }) => {
           <View style={styles.sellerProfile}>
             <View style={styles.sellerAvatar}>
               <Image
-                source={{ uri: item?.seller?.avatar }}
+                source={{ uri: item?.seller?.avatar || DEFAULT_AVATAR }}
                 style={{ width: 48, height: 48 }}
               />
             </View>

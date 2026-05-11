@@ -22,6 +22,7 @@ import {
   fetchUserProfile,
   fetchItems,
   getChats,
+  getCart,
 } from '../../redux/thunkFunctions/thunkFunctions';
 import { useDispatch, useSelector } from 'react-redux';
 import CustomLoader from '../../common/CustomLoader';
@@ -75,6 +76,7 @@ const HomeScreen = ({ navigation }) => {
   useEffect(() => {
     dispatch(fetchUserProfile());
     dispatch(getChats());
+    dispatch(getCart());
   }, []);
 
   useEffect(() => {

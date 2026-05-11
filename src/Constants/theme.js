@@ -67,6 +67,8 @@ export const COLORS = {
   red:"red",
 };
 
+export const DEFAULT_AVATAR = 'https://static.vecteezy.com/system/resources/thumbnails/005/544/718/small/profile-icon-design-free-vector.jpg';
+
 export const FONTS = {
   REGULAR: 'OpenSans-Regular',
   MEDIUM: 'OpenSans-Medium',

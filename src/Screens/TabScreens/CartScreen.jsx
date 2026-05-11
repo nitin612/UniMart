@@ -57,9 +57,21 @@ const CartScreen = ({ navigation }) => {
   };
 
   const handleDeleteItem = itemId => {
-    dispatch(deleteCartItem(itemId)).then(() => {
-      dispatch(getCart());
-    });
+    Alert.alert(
+      'Remove Item',
+      'Are you sure you want to remove this item from your cart?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Remove',
+          style: 'destructive',
+          onPress: () =>
+            dispatch(deleteCartItem(itemId)).then(() => {
+              dispatch(getCart());
+            }),
+        },
+      ],
+    );
   };
 
   const handleBuyItem = (sellerId, title, itemId, image, userName) => {
@@ -182,7 +194,7 @@ const CartScreen = ({ navigation }) => {
             <TouchableOpacity
               style={styles.primaryButton}
               activeOpacity={0.8}
-              onPress={() => navigation.navigate('Home')}
+              onPress={() => navigation.navigate('HomeScreen')}
             >
               <Text style={styles.primaryButtonText}>Start Shopping</Text>
             </TouchableOpacity>

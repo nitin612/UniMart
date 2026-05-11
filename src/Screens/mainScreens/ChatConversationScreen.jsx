@@ -26,6 +26,7 @@ import {
   FONT_SIZES,
   RADIUS,
   SPACING,
+  DEFAULT_AVATAR,
 } from '../../Constants/theme';
 import { io, Socket } from 'socket.io-client';
 import API from '../../api/Api';
@@ -123,8 +124,7 @@ const ChatConversationScreen = ({ navigation, route }) => {
             <Image
               source={{
                 uri:
-                  image ||
-                  'https://static.vecteezy.com/system/resources/thumbnails/005/544/718/small/profile-icon-design-free-vector.jpg',
+                  image || DEFAULT_AVATAR,
               }}
               style={styles.tinyAvatar}
             />

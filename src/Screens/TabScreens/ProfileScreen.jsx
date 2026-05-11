@@ -6,6 +6,7 @@ import {
   Image,
   ScrollView,
   ActivityIndicator,
+  StatusBar,
 } from 'react-native';
 import React, { useEffect } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -17,6 +18,7 @@ import {
   RADIUS,
   SCREEN,
   SPACING,
+  DEFAULT_AVATAR,
 } from '../../Constants/theme';
 import ProfileOptionsListing from '../../Components/ProfileScreenComponents/ProfileOptionsListing';
 import {
@@ -59,14 +61,13 @@ const ProfileScreen = () => {
 
   return (
     <ScrollView style={styles.Container}>
+      <StatusBar barStyle="light-content" />
       <SafeAreaView>
         <View style={styles.UpperContainer}>
           <View style={styles.imageConatiner}>
             <Image
               source={{
-                uri:
-                  userData?.avatar ||
-                  'https://images.unsplash.com/photo-1609505848912-b7c3b8b4beda?q=80&w=1065&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
+                uri: userData?.avatar || DEFAULT_AVATAR,
               }}
               style={styles.profileImage}
             />
@@ -154,6 +155,7 @@ const ProfileScreen = () => {
             name={'Help Center'}
             icon={ChevronRight}
             iconColor={COLORS.grey}
+            onPress={() => navigation.navigate('HelpCenterScreen')}
           />
           <TouchableOpacity style={styles.logoutView} onPress={handleLogOut}>
             <LogOut size={24} color={'red'} strokeWidth={2.5} />

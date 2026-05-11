@@ -219,9 +219,9 @@ const ChatConversationScreen = ({ navigation, route }) => {
         )}
 
         <View style={styles.minimalInputArea}>
-          <TouchableOpacity style={styles.plusBtn}>
+          {/* <TouchableOpacity style={styles.plusBtn}>
             <Plus size={22} color={COLORS.TEXT_SECONDARY} />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
 
           <View style={styles.inputFieldBox}>
             <TextInput

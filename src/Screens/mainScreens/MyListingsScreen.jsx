@@ -17,6 +17,7 @@ import {
   MoreVertical,
   Edit3,
   Trash2,
+  CheckCircle,
 } from 'lucide-react-native';
 import {
   COLORS,
@@ -71,6 +72,42 @@ const MyListingsScreen = ({ route }) => {
     ]);
   };
 
+  const handleMarkAsSold = async item => {
+    Alert.alert('Mark as Sold', 'Are you sure you want to mark this item as sold?', [
+      {
+        text: 'Cancel',
+        style: 'cancel',
+      },
+      {
+        text: 'Yes',
+        onPress: async () => {
+          try {
+            setIsLoading(true);
+            const payload = {
+              title: item.title,
+              price: item.price,
+              category: item.category,
+              description: item.description,
+              condition: item.condition,
+              isSold: true,
+            };
+            const response = await API.put(`api/items/${item._id}`, payload);
+            if (response.status === 200 || response.status === 201) {
+              setIsLoading(false);
+              dispatch(fetchUserProfile());
+              dispatch(fetchItems());
+              navigation.goBack();
+            }
+          } catch (err) {
+            console.warn('unable to mark as sold', err);
+            Alert.alert('Error', 'Something went wrong.');
+            setIsLoading(false);
+          }
+        },
+      },
+    ]);
+  };
+
   const renderItem = ({ item }) => {
     return (
       <View style={styles.card}>
@@ -118,6 +155,20 @@ const MyListingsScreen = ({ route }) => {
             </View>
 
             <View style={styles.actionToolbar}>
+              {!item.isSold && (
+                <>
+                  <TouchableOpacity
+                    style={styles.actionIconBtn}
+                    onPress={() => handleMarkAsSold(item)}
+                  >
+                    <CheckCircle size={16} color={COLORS.PRIMARY_DARK1} />
+                    <Text style={[styles.actionText, { color: COLORS.PRIMARY_DARK1 }]}>
+                      Sold
+                    </Text>
+                  </TouchableOpacity>
+                  <View style={styles.actionDivider} />
+                </>
+              )}
               <TouchableOpacity
                 style={styles.actionIconBtn}
                 onPress={() =>
